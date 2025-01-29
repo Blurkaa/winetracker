@@ -1,6 +1,5 @@
-import { Star, Wine } from "lucide-react";
+import { Star } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
 
 interface WineCardProps {
   wine: {
@@ -64,12 +63,10 @@ export const WineCard = ({ wine }: WineCardProps) => {
       <CardContent>
         {wine.imageUrl && (
           <div className="mb-4">
-            <Image
+            <img
               src={wine.imageUrl}
               alt={wine.name}
-              width={300}
-              height={400}
-              className="rounded-md object-cover"
+              className="rounded-md object-cover w-full h-[400px]"
             />
           </div>
         )}
