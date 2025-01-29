@@ -18,7 +18,7 @@ interface WineCardProps {
     appearance: {
       clarity: "clear" | "hazy";
       intensity: "pale" | "medium" | "deep";
-      color: string;
+      colours: string[]; // Updated to match new type
     };
     nose: {
       condition: "clean" | "unclean";
@@ -111,7 +111,8 @@ export const WineCard = ({ wine }: WineCardProps) => {
               <div>
                 <h5 className="font-medium">Appearance</h5>
                 <p>
-                  {wine.appearance.clarity}, {wine.appearance.intensity}, {wine.appearance.color}
+                  {wine.appearance.clarity}, {wine.appearance.intensity}, 
+                  {wine.appearance.colours.join(", ")}
                 </p>
               </div>
 

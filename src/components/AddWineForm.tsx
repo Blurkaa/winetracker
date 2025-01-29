@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface WineFormData {
   name: string;
@@ -30,7 +31,7 @@ interface WineFormData {
   appearance: {
     clarity: "clear" | "hazy";
     intensity: "pale" | "medium" | "deep";
-    color: string;
+    colours: string[];
   };
   nose: {
     condition: "clean" | "unclean";
@@ -75,7 +76,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
     appearance: {
       clarity: "clear",
       intensity: "medium",
-      color: "",
+      colours: [],
     },
     nose: {
       condition: "clean",
@@ -93,6 +94,24 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       finish: "medium",
     },
   });
+
+  const wineColourOptions = {
+    white: ["lemon-green", "lemon", "gold", "amber", "brown"],
+    rosé: ["pink", "salmon", "orange"],
+    red: ["purple", "ruby", "garnet", "tawny", "brown"]
+  };
+
+  const handleColourChange = (colour: string, isChecked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      appearance: {
+        ...prev.appearance,
+        colours: isChecked 
+          ? [...prev.appearance.colours, colour]
+          : prev.appearance.colours.filter(c => c !== colour)
+      }
+    }));
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -113,8 +132,6 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
 
     let imageUrl;
     if (selectedImage) {
-      // Here you would typically upload the image to your storage service
-      // For now, we'll create a temporary URL
       imageUrl = URL.createObjectURL(selectedImage);
     }
 
@@ -134,7 +151,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       appearance: {
         clarity: "clear",
         intensity: "medium",
-        color: "",
+        colours: [],
       },
       nose: {
         condition: "clean",
@@ -353,17 +370,54 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
             </div>
 
             <div className="space-y-2 mt-4">
-              <Label>Color</Label>
-              <Input
-                value={formData.appearance.color}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    appearance: { ...formData.appearance, color: e.target.value }
-                  })
-                }
-                placeholder="e.g. Ruby"
-              />
+              <Label>Colours</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {formData.type === "white" && (
+                  <div className="space-y-2 border rounded-lg p-3">
+                    <h5 className="font-medium mb-2">White Wine Colours</h5>
+                    {wineColourOptions.white.map((colour) => (
+                      <div key={colour} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={colour}
+                          checked={formData.appearance.colours.includes(colour)}
+                          onCheckedChange={(checked) => handleColourChange(colour, checked as boolean)}
+                        />
+                        <Label htmlFor={colour} className="cursor-pointer">{colour}</Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {formData.type === "rosé" && (
+                  <div className="space-y-2 border rounded-lg p-3">
+                    <h5 className="font-medium mb-2">Rosé Wine Colours</h5>
+                    {wineColourOptions.rosé.map((colour) => (
+                      <div key={colour} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={colour}
+                          checked={formData.appearance.colours.includes(colour)}
+                          onCheckedChange={(checked) => handleColourChange(colour, checked as boolean)}
+                        />
+                        <Label htmlFor={colour} className="cursor-pointer">{colour}</Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {formData.type === "red" && (
+                  <div className="space-y-2 border rounded-lg p-3">
+                    <h5 className="font-medium mb-2">Red Wine Colours</h5>
+                    {wineColourOptions.red.map((colour) => (
+                      <div key={colour} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={colour}
+                          checked={formData.appearance.colours.includes(colour)}
+                          onCheckedChange={(checked) => handleColourChange(colour, checked as boolean)}
+                        />
+                        <Label htmlFor={colour} className="cursor-pointer">{colour}</Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
