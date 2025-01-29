@@ -748,3 +748,5 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
         Add Wine
       </Button>
     </form>
+  );
+};
