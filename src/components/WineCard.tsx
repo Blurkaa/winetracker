@@ -1,15 +1,42 @@
-import { Star } from "lucide-react";
+import { Star, Wine } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Image from "next/image";
 
 interface WineCardProps {
   wine: {
     name: string;
     producer: string;
     region: string;
+    country: string;
+    appellation: string;
     vintage: number;
+    price: number;
+    type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
     alcoholLevel: number;
     grapeVariety: string;
     rating: number;
+    imageUrl?: string;
+    appearance: {
+      clarity: "clear" | "hazy";
+      intensity: "pale" | "medium" | "deep";
+      color: string;
+    };
+    nose: {
+      condition: "clean" | "unclean";
+      intensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
+      aromaCharacteristics: string;
+      development: "youthful" | "developing" | "fully developed" | "tired";
+    };
+    palate: {
+      sweetness: "dry" | "off-dry" | "medium-dry" | "medium-sweet" | "sweet" | "luscious";
+      acidity: "low" | "medium-" | "medium" | "medium+" | "high";
+      tannin: "low" | "medium-" | "medium" | "medium+" | "high";
+      alcohol: "low" | "medium" | "high";
+      body: "light" | "medium-" | "medium" | "medium+" | "full";
+      mousse?: "delicate" | "creamy" | "aggressive";
+      flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
+      finish: "short" | "medium-" | "medium" | "medium+" | "long";
+    };
     notes?: string;
   };
 }
@@ -35,25 +62,90 @@ export const WineCard = ({ wine }: WineCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
+        {wine.imageUrl && (
+          <div className="mb-4">
+            <Image
+              src={wine.imageUrl}
+              alt={wine.name}
+              width={300}
+              height={400}
+              className="rounded-md object-cover"
+            />
+          </div>
+        )}
         <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Region:</span>
-            <span className="font-medium">{wine.region}</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-muted-foreground">Type:</span>
+              <span className="font-medium ml-2">{wine.type}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Price:</span>
+              <span className="font-medium ml-2">${wine.price}</span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Vintage:</span>
-            <span className="font-medium">{wine.vintage}</span>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-muted-foreground">Region:</span>
+              <span className="font-medium ml-2">{wine.region}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Country:</span>
+              <span className="font-medium ml-2">{wine.country}</span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Alcohol:</span>
-            <span className="font-medium">{wine.alcoholLevel}%</span>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-muted-foreground">Vintage:</span>
+              <span className="font-medium ml-2">{wine.vintage}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Alcohol:</span>
+              <span className="font-medium ml-2">{wine.alcoholLevel}%</span>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Grape:</span>
-            <span className="font-medium">{wine.grapeVariety}</span>
+
+          <div className="mt-4">
+            <h4 className="font-semibold mb-2">WSET Evaluation</h4>
+            
+            <div className="space-y-4">
+              <div>
+                <h5 className="font-medium">Appearance</h5>
+                <p>
+                  {wine.appearance.clarity}, {wine.appearance.intensity}, {wine.appearance.color}
+                </p>
+              </div>
+
+              <div>
+                <h5 className="font-medium">Nose</h5>
+                <p>
+                  {wine.nose.condition}, {wine.nose.intensity} intensity
+                  {wine.nose.aromaCharacteristics && (
+                    <span className="block italic">{wine.nose.aromaCharacteristics}</span>
+                  )}
+                  Development: {wine.nose.development}
+                </p>
+              </div>
+
+              <div>
+                <h5 className="font-medium">Palate</h5>
+                <div className="grid grid-cols-2 gap-2">
+                  <p>Sweetness: {wine.palate.sweetness}</p>
+                  <p>Acidity: {wine.palate.acidity}</p>
+                  <p>Tannin: {wine.palate.tannin}</p>
+                  <p>Body: {wine.palate.body}</p>
+                  {wine.type === "sparkling" && <p>Mousse: {wine.palate.mousse}</p>}
+                  <p>Flavour Intensity: {wine.palate.flavourIntensity}</p>
+                  <p>Finish: {wine.palate.finish}</p>
+                </div>
+              </div>
+            </div>
           </div>
+
           {wine.notes && (
-            <p className="text-muted-foreground mt-2 italic">{wine.notes}</p>
+            <p className="text-muted-foreground mt-4 italic">{wine.notes}</p>
           )}
         </div>
       </CardContent>
