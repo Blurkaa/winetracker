@@ -21,7 +21,7 @@ interface Wine {
   appearance: {
     clarity: "clear" | "hazy";
     intensity: "pale" | "medium" | "deep";
-    color: string;
+    colours: string[];
   };
   nose: {
     condition: "clean" | "unclean";

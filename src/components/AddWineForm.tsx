@@ -608,6 +608,28 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <Label>Alcohol Level</Label>
+                <Select
+                  value={formData.palate.alcohol}
+                  onValueChange={(value: any) =>
+                    setFormData({
+                      ...formData,
+                      palate: { ...formData.palate, alcohol: value }
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low (&lt;11%)</SelectItem>
+                    <SelectItem value="medium">Medium (11-13.9%)</SelectItem>
+                    <SelectItem value="high">High (&gt;14%)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {formData.type === "sparkling" && (
                 <div className="space-y-2">
                   <Label>Mousse</Label>
@@ -726,5 +748,3 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
         Add Wine
       </Button>
     </form>
-  );
-};

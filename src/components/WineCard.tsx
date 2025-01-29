@@ -134,6 +134,7 @@ export const WineCard = ({ wine }: WineCardProps) => {
                   <p>Acidity: {wine.palate.acidity}</p>
                   <p>Tannin: {wine.palate.tannin}</p>
                   <p>Body: {wine.palate.body}</p>
+                  <p>Alcohol: {wine.palate.alcohol}</p>
                   {wine.type === "sparkling" && <p>Mousse: {wine.palate.mousse}</p>}
                   <p>Flavour Intensity: {wine.palate.flavourIntensity}</p>
                   <p>Finish: {wine.palate.finish}</p>
