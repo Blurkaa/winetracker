@@ -58,7 +58,7 @@ export const WineFilters = ({ filters, setFilters }: WineFiltersProps) => {
               <SelectValue placeholder="Select rating" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any rating</SelectItem>
+              <SelectItem value="all">Any rating</SelectItem>
               {[1, 2, 3, 4, 5].map((rating) => (
                 <SelectItem key={rating} value={rating.toString()}>
                   {rating} star{rating !== 1 ? "s" : ""} or higher
@@ -77,7 +77,7 @@ export const WineFilters = ({ filters, setFilters }: WineFiltersProps) => {
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any type</SelectItem>
+              <SelectItem value="all">Any type</SelectItem>
               <SelectItem value="red">Red</SelectItem>
               <SelectItem value="white">White</SelectItem>
               <SelectItem value="rosé">Rosé</SelectItem>

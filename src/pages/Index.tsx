@@ -14,8 +14,8 @@ const Index = () => {
     country: "",
     region: "",
     grapeVariety: "",
-    minRating: "",
-    type: "",
+    minRating: "all",
+    type: "all",
   });
 
   const { data: wines = [], isLoading } = useQuery({
@@ -35,10 +35,10 @@ const Index = () => {
       if (filters.grapeVariety) {
         query = query.ilike("grape_variety", `%${filters.grapeVariety}%`);
       }
-      if (filters.minRating) {
+      if (filters.minRating !== "all") {
         query = query.gte("rating", parseInt(filters.minRating));
       }
-      if (filters.type) {
+      if (filters.type !== "all") {
         query = query.eq("type", filters.type);
       }
 
@@ -54,18 +54,36 @@ const Index = () => {
         producer: wine.producer,
         region: wine.region,
         country: wine.country,
-        appellation: wine.appellation,
+        appellation: wine.appellation || "",
         vintage: wine.vintage,
-        price: Number(wine.price),
+        price: Number(wine.price || 0),
         type: wine.type as "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified",
-        alcoholLevel: Number(wine.alcohol_level),
+        alcoholLevel: Number(wine.alcohol_level || 0),
         grapeVariety: wine.grape_variety,
-        rating: wine.rating,
+        rating: wine.rating || 0,
         imageUrl: wine.image_url,
-        appearance: wine.appearance,
-        nose: wine.nose,
-        palate: wine.palate,
-        notes: wine.notes
+        appearance: {
+          clarity: (wine.appearance as any)?.clarity || "clear",
+          intensity: (wine.appearance as any)?.intensity || "medium",
+          colours: (wine.appearance as any)?.colours || []
+        },
+        nose: {
+          condition: (wine.nose as any)?.condition || "clean",
+          intensity: (wine.nose as any)?.intensity || "medium",
+          aromaCharacteristics: (wine.nose as any)?.aromaCharacteristics || "",
+          development: (wine.nose as any)?.development || "youthful"
+        },
+        palate: {
+          sweetness: (wine.palate as any)?.sweetness || "dry",
+          acidity: (wine.palate as any)?.acidity || "medium",
+          tannin: (wine.palate as any)?.tannin || "medium",
+          alcohol: (wine.palate as any)?.alcohol || "medium",
+          body: (wine.palate as any)?.body || "medium",
+          mousse: (wine.palate as any)?.mousse,
+          flavourIntensity: (wine.palate as any)?.flavourIntensity || "medium",
+          finish: (wine.palate as any)?.finish || "medium"
+        },
+        notes: wine.notes || ""
       }));
     }
   });
