@@ -9,7 +9,69 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      wines: {
+        Row: {
+          alcohol_level: number | null
+          appearance: Json
+          appellation: string | null
+          country: string
+          created_at: string
+          grape_variety: string
+          id: string
+          image_url: string | null
+          name: string
+          nose: Json
+          notes: string | null
+          palate: Json
+          price: number | null
+          producer: string
+          rating: number | null
+          region: string
+          type: string
+          vintage: number
+        }
+        Insert: {
+          alcohol_level?: number | null
+          appearance?: Json
+          appellation?: string | null
+          country: string
+          created_at?: string
+          grape_variety: string
+          id?: string
+          image_url?: string | null
+          name: string
+          nose?: Json
+          notes?: string | null
+          palate?: Json
+          price?: number | null
+          producer: string
+          rating?: number | null
+          region: string
+          type: string
+          vintage: number
+        }
+        Update: {
+          alcohol_level?: number | null
+          appearance?: Json
+          appellation?: string | null
+          country?: string
+          created_at?: string
+          grape_variety?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          nose?: Json
+          notes?: string | null
+          palate?: Json
+          price?: number | null
+          producer?: string
+          rating?: number | null
+          region?: string
+          type?: string
+          vintage?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

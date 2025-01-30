@@ -2,52 +2,89 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AddWineForm } from "@/components/AddWineForm";
+import { AddWineForm } from "@/components/wine-form/AddWineForm";
 import { WineCard } from "@/components/WineCard";
-
-interface Wine {
-  name: string;
-  producer: string;
-  region: string;
-  country: string;
-  appellation: string;
-  vintage: number;
-  price: number;
-  type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
-  alcoholLevel: number;
-  grapeVariety: string;
-  rating: number;
-  imageUrl?: string;
-  appearance: {
-    clarity: "clear" | "hazy";
-    intensity: "pale" | "medium" | "deep";
-    colours: string[];
-  };
-  nose: {
-    condition: "clean" | "unclean";
-    intensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-    aromaCharacteristics: string;
-    development: "youthful" | "developing" | "fully developed" | "tired";
-  };
-  palate: {
-    sweetness: "dry" | "off-dry" | "medium-dry" | "medium-sweet" | "sweet" | "luscious";
-    acidity: "low" | "medium-" | "medium" | "medium+" | "high";
-    tannin: "low" | "medium-" | "medium" | "medium+" | "high";
-    alcohol: "low" | "medium" | "high";
-    body: "light" | "medium-" | "medium" | "medium+" | "full";
-    mousse?: "delicate" | "creamy" | "aggressive";
-    flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-    finish: "short" | "medium-" | "medium" | "medium+" | "long";
-  };
-  notes?: string;
-}
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Label } from "@/components/ui/label";
 
 const Index = () => {
-  const [wines, setWines] = useState<Wine[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    country: "",
+    region: "",
+    grapeVariety: "",
+    minRating: "",
+    type: "",
+  });
 
-  const handleAddWine = (wine: Wine) => {
-    setWines([wine, ...wines]);
+  const { data: wines = [], isLoading } = useQuery({
+    queryKey: ["wines", filters],
+    queryFn: async () => {
+      let query = supabase
+        .from("wines")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (filters.country) {
+        query = query.ilike("country", `%${filters.country}%`);
+      }
+      if (filters.region) {
+        query = query.ilike("region", `%${filters.region}%`);
+      }
+      if (filters.grapeVariety) {
+        query = query.ilike("grape_variety", `%${filters.grapeVariety}%`);
+      }
+      if (filters.minRating) {
+        query = query.gte("rating", parseInt(filters.minRating));
+      }
+      if (filters.type) {
+        query = query.eq("type", filters.type);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error("Error fetching wines:", error);
+        return [];
+      }
+
+      return data.map(wine => ({
+        ...wine,
+        appearance: wine.appearance as any,
+        nose: wine.nose as any,
+        palate: wine.palate as any
+      }));
+    }
+  });
+
+  const handleAddWine = async (wine: any) => {
+    const { error } = await supabase.from("wines").insert([{
+      name: wine.name,
+      producer: wine.producer,
+      region: wine.region,
+      country: wine.country,
+      appellation: wine.appellation,
+      vintage: wine.vintage,
+      price: wine.price,
+      type: wine.type,
+      alcohol_level: wine.alcoholLevel,
+      grape_variety: wine.grapeVariety,
+      rating: wine.rating,
+      image_url: wine.imageUrl,
+      appearance: wine.appearance,
+      nose: wine.nose,
+      palate: wine.palate,
+      notes: wine.notes
+    }]);
+
+    if (error) {
+      console.error("Error adding wine:", error);
+      return;
+    }
+
     setIsDialogOpen(false);
   };
 
@@ -72,7 +109,80 @@ const Index = () => {
           </Dialog>
         </div>
 
-        {wines.length === 0 ? (
+        <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
+          <h2 className="font-playfair text-xl font-semibold mb-4">Filter Wines</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="space-y-2">
+              <Label>Country</Label>
+              <Input
+                placeholder="Filter by country"
+                value={filters.country}
+                onChange={(e) => setFilters(prev => ({ ...prev, country: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Region</Label>
+              <Input
+                placeholder="Filter by region"
+                value={filters.region}
+                onChange={(e) => setFilters(prev => ({ ...prev, region: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Grape Variety</Label>
+              <Input
+                placeholder="Filter by grape"
+                value={filters.grapeVariety}
+                onChange={(e) => setFilters(prev => ({ ...prev, grapeVariety: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Minimum Rating</Label>
+              <Select
+                value={filters.minRating}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any rating</SelectItem>
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <SelectItem key={rating} value={rating.toString()}>
+                      {rating} star{rating !== 1 ? "s" : ""} or higher
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Wine Type</Label>
+              <Select
+                value={filters.type}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Any type</SelectItem>
+                  <SelectItem value="red">Red</SelectItem>
+                  <SelectItem value="white">White</SelectItem>
+                  <SelectItem value="rosé">Rosé</SelectItem>
+                  <SelectItem value="sparkling">Sparkling</SelectItem>
+                  <SelectItem value="sweet">Sweet</SelectItem>
+                  <SelectItem value="fortified">Fortified</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Loading your wine collection...</p>
+          </div>
+        ) : wines.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
               Your collection is empty. Start by adding your first wine!
@@ -81,7 +191,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {wines.map((wine, index) => (
-              <WineCard key={index} wine={wine} />
+              <WineCard key={wine.id || index} wine={wine} />
             ))}
           </div>
         )}
