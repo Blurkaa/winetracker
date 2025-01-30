@@ -3,12 +3,10 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AddWineForm } from "@/components/wine-form/AddWineForm";
-import { WineCard } from "@/components/WineCard";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Label } from "@/components/ui/label";
+import { WineFilters } from "@/components/wine/WineFilters";
+import { WineGrid } from "@/components/wine/WineGrid";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -51,7 +49,6 @@ const Index = () => {
         return [];
       }
 
-      // Transform the data to match the WineCard component's expected structure
       return data.map(wine => ({
         name: wine.name,
         producer: wine.producer,
@@ -122,92 +119,8 @@ const Index = () => {
           </Dialog>
         </div>
 
-        <div className="bg-white rounded-lg p-6 mb-8 shadow-sm">
-          <h2 className="font-playfair text-xl font-semibold mb-4">Filter Wines</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <div className="space-y-2">
-              <Label>Country</Label>
-              <Input
-                placeholder="Filter by country"
-                value={filters.country}
-                onChange={(e) => setFilters(prev => ({ ...prev, country: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Region</Label>
-              <Input
-                placeholder="Filter by region"
-                value={filters.region}
-                onChange={(e) => setFilters(prev => ({ ...prev, region: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Grape Variety</Label>
-              <Input
-                placeholder="Filter by grape"
-                value={filters.grapeVariety}
-                onChange={(e) => setFilters(prev => ({ ...prev, grapeVariety: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Minimum Rating</Label>
-              <Select
-                value={filters.minRating}
-                onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select rating" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Any rating</SelectItem>
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <SelectItem key={rating} value={rating.toString()}>
-                      {rating} star{rating !== 1 ? "s" : ""} or higher
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Wine Type</Label>
-              <Select
-                value={filters.type}
-                onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Any type</SelectItem>
-                  <SelectItem value="red">Red</SelectItem>
-                  <SelectItem value="white">White</SelectItem>
-                  <SelectItem value="rosé">Rosé</SelectItem>
-                  <SelectItem value="sparkling">Sparkling</SelectItem>
-                  <SelectItem value="sweet">Sweet</SelectItem>
-                  <SelectItem value="fortified">Fortified</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading your wine collection...</p>
-          </div>
-        ) : wines.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Your collection is empty. Start by adding your first wine!
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {wines.map((wine, index) => (
-              <WineCard key={index} wine={wine} />
-            ))}
-          </div>
-        )}
+        <WineFilters filters={filters} setFilters={setFilters} />
+        <WineGrid wines={wines} isLoading={isLoading} />
       </div>
     </div>
   );
