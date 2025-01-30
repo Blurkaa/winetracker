@@ -51,11 +51,24 @@ const Index = () => {
         return [];
       }
 
+      // Transform the data to match the WineCard component's expected structure
       return data.map(wine => ({
-        ...wine,
-        appearance: wine.appearance as any,
-        nose: wine.nose as any,
-        palate: wine.palate as any
+        name: wine.name,
+        producer: wine.producer,
+        region: wine.region,
+        country: wine.country,
+        appellation: wine.appellation,
+        vintage: wine.vintage,
+        price: Number(wine.price),
+        type: wine.type as "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified",
+        alcoholLevel: Number(wine.alcohol_level),
+        grapeVariety: wine.grape_variety,
+        rating: wine.rating,
+        imageUrl: wine.image_url,
+        appearance: wine.appearance,
+        nose: wine.nose,
+        palate: wine.palate,
+        notes: wine.notes
       }));
     }
   });
@@ -191,7 +204,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {wines.map((wine, index) => (
-              <WineCard key={wine.id || index} wine={wine} />
+              <WineCard key={index} wine={wine} />
             ))}
           </div>
         )}
