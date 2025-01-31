@@ -75,9 +75,6 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => renderStar(star))}
       </div>
-      <div className="text-sm text-muted-foreground">
-        {rating > 0 ? `${rating} stars` : "No rating"}
-      </div>
     </div>
   );
 };
