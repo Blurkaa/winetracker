@@ -16,10 +16,7 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
     const x = e.clientX - rect.left;
     const halfWidth = rect.width / 2;
     
-    // Calculate the star value (1-5) from the button's data attribute
     const star = Number(button.getAttribute('data-star'));
-    
-    // If mouse is on left half of star, use half star rating
     setHoverRating(x < halfWidth ? star - 0.5 : star);
   };
 
@@ -33,7 +30,6 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
     const x = e.clientX - rect.left;
     const halfWidth = rect.width / 2;
     
-    // If clicked on left half of star, use half star rating
     onRatingChange(x < halfWidth ? star - 0.5 : star);
   };
 
@@ -50,17 +46,17 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={(e) => handleClick(position, e)}
-        className="focus:outline-none relative w-6 h-6"
+        className="focus:outline-none w-6 h-6 relative"
       >
         {isHalfStar ? (
           <StarHalf
             size={24}
-            className="rating-star absolute fill-gold"
+            className="rating-star absolute inset-0"
           />
         ) : (
           <Star
             size={24}
-            className={`rating-star ${
+            className={`rating-star absolute inset-0 ${
               isFullStar ? "fill-gold" : "fill-none text-gray-300"
             }`}
           />
