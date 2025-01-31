@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { WineFilters } from "@/components/wine/WineFilters";
 import { WineGrid } from "@/components/wine/WineGrid";
 import { transformWineData } from "@/utils/wineTransformations";
+import type { WineFormData } from "@/components/wine-form/types";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -34,7 +35,7 @@ const Index = () => {
         query = query.ilike("region", `%${filters.region}%`);
       }
       if (filters.grapeVariety) {
-        query = query.ilike("grape_variety", `%${filters.grapeVariety}%`);
+        query = query.contains("grape_variety", [filters.grapeVariety]);
       }
       if (filters.minRating !== "all") {
         query = query.gte("rating", parseInt(filters.minRating));
@@ -54,7 +55,7 @@ const Index = () => {
     }
   });
 
-  const handleAddWine = async (wine: any) => {
+  const handleAddWine = async (wine: WineFormData) => {
     const { error } = await supabase.from("wines").insert([{
       name: wine.name,
       producer: wine.producer,
