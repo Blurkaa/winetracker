@@ -13,7 +13,7 @@ export const transformWineData = (wine: WineRow): WineFormData => ({
   price: Number(wine.price || 0),
   type: wine.type as WineFormData['type'],
   alcoholLevel: Number(wine.alcohol_level || 0),
-  grapeVariety: wine.grape_variety || [], // Updated to handle array
+  grapeVariety: wine.grape_variety || [],
   rating: wine.rating || 0,
   imageUrl: wine.image_url,
   appearance: {
