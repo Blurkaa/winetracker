@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { Star, StarHalf } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface WineCardProps {
@@ -12,7 +12,7 @@ interface WineCardProps {
     price: number;
     type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
     alcoholLevel: number;
-    grapeVariety: string[];  // Updated to string array
+    grapeVariety: string[];
     rating: number;
     imageUrl?: string;
     appearance: {
@@ -41,6 +41,29 @@ interface WineCardProps {
 }
 
 export const WineCard = ({ wine }: WineCardProps) => {
+  const renderStar = (position: number) => {
+    const isHalfStar = wine.rating === position - 0.5;
+    const isFullStar = wine.rating >= position;
+    
+    return (
+      <div key={position} className="w-4 h-4">
+        {isHalfStar ? (
+          <StarHalf
+            size={16}
+            className="rating-star fill-gold"
+          />
+        ) : (
+          <Star
+            size={16}
+            className={`rating-star ${
+              isFullStar ? "fill-gold" : "fill-none text-gray-300"
+            }`}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <Card className="wine-card">
       <CardHeader className="pb-3">
@@ -50,13 +73,7 @@ export const WineCard = ({ wine }: WineCardProps) => {
             <p className="text-sm text-muted-foreground">{wine.producer}</p>
           </div>
           <div className="flex gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={16}
-                className={`rating-star ${i < wine.rating ? "fill-gold" : "fill-none text-gray-300"}`}
-              />
-            ))}
+            {[1, 2, 3, 4, 5].map((position) => renderStar(position))}
           </div>
         </div>
       </CardHeader>
