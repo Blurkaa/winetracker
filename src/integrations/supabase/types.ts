@@ -16,7 +16,7 @@ export type Database = {
           appellation: string | null
           country: string
           created_at: string
-          grape_variety: string
+          grape_variety: string[]
           id: string
           image_url: string | null
           name: string
@@ -36,7 +36,7 @@ export type Database = {
           appellation?: string | null
           country: string
           created_at?: string
-          grape_variety: string
+          grape_variety?: string[]
           id?: string
           image_url?: string | null
           name: string
@@ -56,7 +56,7 @@ export type Database = {
           appellation?: string | null
           country?: string
           created_at?: string
-          grape_variety?: string
+          grape_variety?: string[]
           id?: string
           image_url?: string | null
           name?: string

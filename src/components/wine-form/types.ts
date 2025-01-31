@@ -8,7 +8,7 @@ export interface WineFormData {
   price: number;
   type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
   alcoholLevel: number;
-  grapeVariety: string;
+  grapeVariety: string[];
   rating: number;
   imageUrl?: string;
   appearance: {

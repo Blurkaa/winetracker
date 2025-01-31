@@ -30,7 +30,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
     price: 0,
     type: "red",
     alcoholLevel: 12,
-    grapeVariety: "",
+    grapeVariety: [],
     rating: 0,
     appearance: {
       clarity: "clear",
@@ -62,7 +62,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.producer || !formData.region || !formData.grapeVariety) {
+    if (!formData.name || !formData.producer || !formData.region || !formData.grapeVariety.length) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -87,7 +87,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       price: 0,
       type: "red",
       alcoholLevel: 12,
-      grapeVariety: "",
+      grapeVariety: [],
       rating: 0,
       appearance: {
         clarity: "clear",
