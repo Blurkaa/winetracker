@@ -12,13 +12,13 @@ interface WineCardProps {
     price: number;
     type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
     alcoholLevel: number;
-    grapeVariety: string;
+    grapeVariety: string[];  // Updated to string array
     rating: number;
     imageUrl?: string;
     appearance: {
       clarity: "clear" | "hazy";
       intensity: "pale" | "medium" | "deep";
-      colours: string[]; // Updated to match new type
+      colours: string[];
     };
     nose: {
       condition: "clean" | "unclean";
@@ -102,6 +102,11 @@ export const WineCard = ({ wine }: WineCardProps) => {
               <span className="text-muted-foreground">Alcohol:</span>
               <span className="font-medium ml-2">{wine.alcoholLevel}%</span>
             </div>
+          </div>
+
+          <div>
+            <span className="text-muted-foreground">Grape Varieties:</span>
+            <span className="font-medium ml-2">{wine.grapeVariety.join(", ")}</span>
           </div>
 
           <div className="mt-4">
