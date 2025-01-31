@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { WineFilters } from "@/components/wine/WineFilters";
 import { WineGrid } from "@/components/wine/WineGrid";
+import { transformWineData } from "@/utils/wineTransformations";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -49,42 +50,7 @@ const Index = () => {
         return [];
       }
 
-      return data.map(wine => ({
-        name: wine.name,
-        producer: wine.producer,
-        region: wine.region,
-        country: wine.country,
-        appellation: wine.appellation || "",
-        vintage: wine.vintage,
-        price: Number(wine.price || 0),
-        type: wine.type as "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified",
-        alcoholLevel: Number(wine.alcohol_level || 0),
-        grapeVariety: wine.grape_variety,
-        rating: wine.rating || 0,
-        imageUrl: wine.image_url,
-        appearance: {
-          clarity: (wine.appearance as any)?.clarity || "clear",
-          intensity: (wine.appearance as any)?.intensity || "medium",
-          colours: (wine.appearance as any)?.colours || []
-        },
-        nose: {
-          condition: (wine.nose as any)?.condition || "clean",
-          intensity: (wine.nose as any)?.intensity || "medium",
-          aromaCharacteristics: (wine.nose as any)?.aromaCharacteristics || "",
-          development: (wine.nose as any)?.development || "youthful"
-        },
-        palate: {
-          sweetness: (wine.palate as any)?.sweetness || "dry",
-          acidity: (wine.palate as any)?.acidity || "medium",
-          tannin: (wine.palate as any)?.tannin || "medium",
-          alcohol: (wine.palate as any)?.alcohol || "medium",
-          body: (wine.palate as any)?.body || "medium",
-          mousse: (wine.palate as any)?.mousse,
-          flavourIntensity: (wine.palate as any)?.flavourIntensity || "medium",
-          finish: (wine.palate as any)?.finish || "medium"
-        },
-        notes: wine.notes || ""
-      }));
+      return data.map(transformWineData);
     }
   });
 
