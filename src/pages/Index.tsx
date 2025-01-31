@@ -66,7 +66,7 @@ const Index = () => {
       price: wine.price,
       type: wine.type,
       alcohol_level: wine.alcoholLevel,
-      grape_variety: wine.grapeVariety,
+      grape_variety: Array.isArray(wine.grapeVariety) ? wine.grapeVariety : [wine.grapeVariety],
       rating: wine.rating,
       image_url: wine.imageUrl,
       appearance: wine.appearance,
