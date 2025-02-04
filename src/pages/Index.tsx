@@ -14,21 +14,22 @@ import type { WineFormData } from "@/components/wine-form/types";
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({
+  const initialFilters = {
     country: "",
     region: "",
     grapeVariety: "",
     minRating: "all",
     type: "all",
-  });
+    sort: "recent"
+  };
+  const [filters, setFilters] = useState(initialFilters);
 
   const { data: wines = [], isLoading } = useQuery({
     queryKey: ["wines", filters, searchQuery],
     queryFn: async () => {
       let query = supabase
         .from("wines")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("*");
 
       // Apply search filter
       if (searchQuery) {
@@ -50,6 +51,25 @@ const Index = () => {
       }
       if (filters.type !== "all") {
         query = query.eq("type", filters.type);
+      }
+
+      // Apply sorting
+      switch (filters.sort) {
+        case "vintage_asc":
+          query = query.order("vintage", { ascending: true });
+          break;
+        case "vintage_desc":
+          query = query.order("vintage", { ascending: false });
+          break;
+        case "price_asc":
+          query = query.order("price", { ascending: true });
+          break;
+        case "price_desc":
+          query = query.order("price", { ascending: false });
+          break;
+        case "recent":
+        default:
+          query = query.order("created_at", { ascending: false });
       }
 
       const { data, error } = await query;
@@ -91,6 +111,11 @@ const Index = () => {
     setIsDialogOpen(false);
   };
 
+  const handleReset = () => {
+    setFilters(initialFilters);
+    setSearchQuery("");
+  };
+
   return (
     <div className="min-h-screen bg-cream p-6">
       <div className="max-w-6xl mx-auto">
@@ -113,7 +138,11 @@ const Index = () => {
         </div>
 
         <WineSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        <WineFilters filters={filters} setFilters={setFilters} />
+        <WineFilters 
+          filters={filters} 
+          setFilters={setFilters} 
+          onReset={handleReset}
+        />
         <WineGrid wines={wines} isLoading={isLoading} />
       </div>
     </div>
