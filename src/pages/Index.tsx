@@ -7,11 +7,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { WineFilters } from "@/components/wine/WineFilters";
 import { WineGrid } from "@/components/wine/WineGrid";
+import { WineSearch } from "@/components/wine/WineSearch";
 import { transformWineData } from "@/utils/wineTransformations";
 import type { WineFormData } from "@/components/wine-form/types";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     country: "",
     region: "",
@@ -21,13 +23,19 @@ const Index = () => {
   });
 
   const { data: wines = [], isLoading } = useQuery({
-    queryKey: ["wines", filters],
+    queryKey: ["wines", filters, searchQuery],
     queryFn: async () => {
       let query = supabase
         .from("wines")
         .select("*")
         .order("created_at", { ascending: false });
 
+      // Apply search filter
+      if (searchQuery) {
+        query = query.or(`name.ilike.%${searchQuery}%,producer.ilike.%${searchQuery}%`);
+      }
+
+      // Apply other filters
       if (filters.country) {
         query = query.ilike("country", `%${filters.country}%`);
       }
@@ -104,6 +112,7 @@ const Index = () => {
           </Dialog>
         </div>
 
+        <WineSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <WineFilters filters={filters} setFilters={setFilters} />
         <WineGrid wines={wines} isLoading={isLoading} />
       </div>
