@@ -1,5 +1,5 @@
 export interface WineFormData {
-  id?: string;  // Added id as optional for new wines
+  id?: string;  // Keep optional for new wines
   name: string;
   producer: string;
   region: string;
@@ -35,3 +35,6 @@ export interface WineFormData {
   };
   notes?: string;
 }
+
+// New type for existing wines where ID is required
+export type ExistingWineData = WineFormData & { id: string };

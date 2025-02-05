@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { WineFormData } from "@/components/wine-form/types";
+import { WineFormData, ExistingWineData } from "@/components/wine-form/types";
 import { WineCard } from "@/components/WineCard";
 import { EditWineDialog } from "./EditWineDialog";
 
 interface WineGridProps {
-  wines: (WineFormData & { id: string })[];
+  wines: ExistingWineData[];
   isLoading: boolean;
   onWineUpdated: () => void;
 }
 
 export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => {
-  const [selectedWine, setSelectedWine] = useState<(WineFormData & { id: string }) | null>(null);
+  const [selectedWine, setSelectedWine] = useState<ExistingWineData | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleEdit = (id: string) => {

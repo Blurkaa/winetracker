@@ -9,6 +9,7 @@ import type { WineFilterOptions } from "@/types/wine";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut } from "lucide-react";
+import { ExistingWineData } from "@/components/wine-form/types";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -63,7 +64,11 @@ const Index = () => {
           setFilters={setFilters} 
           onReset={handleReset}
         />
-        <WineGrid wines={wines} isLoading={isLoading} />
+        <WineGrid 
+          wines={wines as ExistingWineData[]} 
+          isLoading={isLoading} 
+          onWineUpdated={() => {}} 
+        />
       </div>
     </div>
   );
