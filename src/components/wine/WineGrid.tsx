@@ -13,9 +13,12 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   const [selectedWine, setSelectedWine] = useState<(WineFormData & { id: string }) | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const handleEdit = (wine: WineFormData & { id: string }) => {
-    setSelectedWine(wine);
-    setIsEditDialogOpen(true);
+  const handleEdit = (id: string) => {
+    const wine = wines.find(w => w.id === id);
+    if (wine) {
+      setSelectedWine(wine);
+      setIsEditDialogOpen(true);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -50,7 +53,7 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
           <WineCard 
             key={wine.id} 
             wine={wine} 
-            onEdit={() => handleEdit(wine)}
+            onEdit={() => handleEdit(wine.id)}
             onDelete={() => handleDelete(wine.id)}
           />
         ))}
