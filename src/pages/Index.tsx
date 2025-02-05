@@ -1,20 +1,15 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { AddWineForm } from "@/components/wine-form/AddWineForm";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { WineFilters } from "@/components/wine/WineFilters";
 import { WineGrid } from "@/components/wine/WineGrid";
 import { WineSearch } from "@/components/wine/WineSearch";
-import { transformWineData } from "@/utils/wineTransformations";
-import type { WineFormData } from "@/components/wine-form/types";
+import { AddWineDialog } from "@/components/wine/AddWineDialog";
+import { useWines } from "@/hooks/useWines";
+import type { WineFilters } from "@/types/wine";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const initialFilters = {
+  const initialFilters: WineFilters = {
     country: "",
     region: "",
     grapeVariety: "",
@@ -22,94 +17,9 @@ const Index = () => {
     type: "all",
     sort: "recent"
   };
-  const [filters, setFilters] = useState(initialFilters);
+  const [filters, setFilters] = useState<WineFilters>(initialFilters);
 
-  const { data: wines = [], isLoading } = useQuery({
-    queryKey: ["wines", filters, searchQuery],
-    queryFn: async () => {
-      let query = supabase
-        .from("wines")
-        .select("*");
-
-      // Apply search filter
-      if (searchQuery) {
-        query = query.or(`name.ilike.%${searchQuery}%,producer.ilike.%${searchQuery}%`);
-      }
-
-      // Apply other filters
-      if (filters.country) {
-        query = query.ilike("country", `%${filters.country}%`);
-      }
-      if (filters.region) {
-        query = query.ilike("region", `%${filters.region}%`);
-      }
-      if (filters.grapeVariety) {
-        query = query.contains("grape_variety", [filters.grapeVariety]);
-      }
-      if (filters.minRating !== "all") {
-        query = query.gte("rating", parseInt(filters.minRating));
-      }
-      if (filters.type !== "all") {
-        query = query.eq("type", filters.type);
-      }
-
-      // Apply sorting
-      switch (filters.sort) {
-        case "vintage_asc":
-          query = query.order("vintage", { ascending: true });
-          break;
-        case "vintage_desc":
-          query = query.order("vintage", { ascending: false });
-          break;
-        case "price_asc":
-          query = query.order("price", { ascending: true });
-          break;
-        case "price_desc":
-          query = query.order("price", { ascending: false });
-          break;
-        case "recent":
-        default:
-          query = query.order("created_at", { ascending: false });
-      }
-
-      const { data, error } = await query;
-      
-      if (error) {
-        console.error("Error fetching wines:", error);
-        return [];
-      }
-
-      return data.map(transformWineData);
-    }
-  });
-
-  const handleAddWine = async (wine: WineFormData) => {
-    const { error } = await supabase.from("wines").insert([{
-      name: wine.name,
-      producer: wine.producer,
-      region: wine.region,
-      country: wine.country,
-      appellation: wine.appellation,
-      vintage: wine.vintage,
-      price: wine.price,
-      type: wine.type,
-      alcohol_level: wine.alcoholLevel,
-      grape_variety: Array.isArray(wine.grapeVariety) ? wine.grapeVariety : [wine.grapeVariety],
-      rating: wine.rating,
-      image_url: wine.imageUrl,
-      appearance: wine.appearance,
-      nose: wine.nose,
-      palate: wine.palate,
-      notes: wine.notes
-    }]);
-
-    if (error) {
-      console.error("Error adding wine:", error);
-      return;
-    }
-
-    setIsDialogOpen(false);
-  };
+  const { data: wines = [], isLoading } = useWines(filters, searchQuery);
 
   const handleReset = () => {
     setFilters(initialFilters);
@@ -121,20 +31,10 @@ const Index = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="font-playfair text-3xl font-bold text-wine">My Wine Collection</h1>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-wine hover:bg-wine-light">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Wine
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="font-playfair text-2xl text-wine">Add New Wine</DialogTitle>
-              </DialogHeader>
-              <AddWineForm onSubmit={handleAddWine} />
-            </DialogContent>
-          </Dialog>
+          <AddWineDialog 
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          />
         </div>
 
         <WineSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
