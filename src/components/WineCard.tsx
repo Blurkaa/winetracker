@@ -1,8 +1,18 @@
-import { Star, StarHalf } from "lucide-react";
+import { Star, StarHalf, MoreVertical, Edit, Trash } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface WineCardProps {
   wine: {
+    id: string;  // Added id to the interface
     name: string;
     producer: string;
     region: string;
@@ -38,9 +48,44 @@ interface WineCardProps {
     };
     notes?: string;
   };
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-export const WineCard = ({ wine }: WineCardProps) => {
+export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
+  const { toast } = useToast();
+
+  const handleDelete = async () => {
+    const { error } = await supabase
+      .from('wines')
+      .delete()
+      .eq('id', wine.id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete wine",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Wine deleted successfully",
+    });
+
+    if (onDelete) {
+      onDelete(wine.id);
+    }
+  };
+
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(wine.id);
+    }
+  };
+
   const renderStar = (position: number) => {
     const isHalfStar = wine.rating === position - 0.5;
     const isFullStar = wine.rating >= position;
@@ -72,8 +117,27 @@ export const WineCard = ({ wine }: WineCardProps) => {
             <h3 className="font-playfair text-xl font-semibold text-wine">{wine.name}</h3>
             <p className="text-sm text-muted-foreground">{wine.producer}</p>
           </div>
-          <div className="flex gap-0.5">
-            {[1, 2, 3, 4, 5].map((position) => renderStar(position))}
+          <div className="flex items-start gap-2">
+            <div className="flex gap-0.5">
+              {[1, 2, 3, 4, 5].map((position) => renderStar(position))}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleEdit}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDelete} className="text-red-600">
+                  <Trash className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardHeader>
@@ -95,7 +159,7 @@ export const WineCard = ({ wine }: WineCardProps) => {
             </div>
             <div>
               <span className="text-muted-foreground">Price:</span>
-              <span className="font-medium ml-2">${wine.price}</span>
+              <span className="font-medium ml-2">€{wine.price}</span>
             </div>
           </div>
           
