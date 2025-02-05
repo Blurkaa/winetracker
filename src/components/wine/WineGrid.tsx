@@ -2,6 +2,7 @@ import { useState } from "react";
 import { WineFormData, ExistingWineData } from "@/components/wine-form/types";
 import { WineCard } from "@/components/WineCard";
 import { EditWineDialog } from "./EditWineDialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface WineGridProps {
   wines: ExistingWineData[];
@@ -12,16 +13,40 @@ interface WineGridProps {
 export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => {
   const [selectedWine, setSelectedWine] = useState<ExistingWineData | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleEdit = (id: string) => {
+    if (!id) {
+      toast({
+        title: "Error",
+        description: "Invalid wine ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const wine = wines.find(w => w.id === id);
     if (wine) {
       setSelectedWine(wine);
       setIsEditDialogOpen(true);
+    } else {
+      toast({
+        title: "Error",
+        description: "Wine not found",
+        variant: "destructive",
+      });
     }
   };
 
   const handleDelete = async (id: string) => {
+    if (!id) {
+      toast({
+        title: "Error",
+        description: "Invalid wine ID",
+        variant: "destructive",
+      });
+      return;
+    }
     onWineUpdated();
   };
 
