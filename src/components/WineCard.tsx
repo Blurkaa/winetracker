@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface WineCardProps {
   wine: {
-    id: string;  // Added id to the interface
+    id: string;
     name: string;
     producer: string;
     region: string;
@@ -56,31 +56,57 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    const { error } = await supabase
-      .from('wines')
-      .delete()
-      .eq('id', wine.id);
-
-    if (error) {
+    if (!wine?.id) {
       toast({
         title: "Error",
-        description: "Failed to delete wine",
+        description: "Invalid wine ID",
         variant: "destructive",
       });
       return;
     }
 
-    toast({
-      title: "Success",
-      description: "Wine deleted successfully",
-    });
+    try {
+      const { error } = await supabase
+        .from('wines')
+        .delete()
+        .eq('id', wine.id);
 
-    if (onDelete) {
-      onDelete(wine.id);
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete wine",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Wine deleted successfully",
+      });
+
+      if (onDelete) {
+        onDelete(wine.id);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
     }
   };
 
   const handleEdit = () => {
+    if (!wine?.id) {
+      toast({
+        title: "Error",
+        description: "Invalid wine ID",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (onEdit) {
       onEdit(wine.id);
     }
