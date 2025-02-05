@@ -16,15 +16,6 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   const { toast } = useToast();
 
   const handleEdit = (id: string) => {
-    if (!id) {
-      toast({
-        title: "Error",
-        description: "Invalid wine ID",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const wine = wines.find(w => w.id === id);
     if (wine) {
       setSelectedWine(wine);
@@ -39,10 +30,11 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   };
 
   const handleDelete = async (id: string) => {
-    if (!id) {
+    const wine = wines.find(w => w.id === id);
+    if (!wine) {
       toast({
         title: "Error",
-        description: "Invalid wine ID",
+        description: "Wine not found",
         variant: "destructive",
       });
       return;
