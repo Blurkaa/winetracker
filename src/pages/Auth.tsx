@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
@@ -24,11 +24,30 @@ const Auth = () => {
           email,
           password,
         });
-        if (error) throw error;
-        toast({
-          title: "Success!",
-          description: "Please check your email to verify your account.",
-        });
+        
+        if (error) {
+          if (error.message.includes("User already registered")) {
+            toast({
+              title: "Account exists",
+              description: "This email is already registered. Please sign in instead.",
+              variant: "destructive",
+            });
+            setIsSignUp(false); // Switch to sign in mode
+          } else if (error.message.includes("Email signups are disabled")) {
+            toast({
+              title: "Sign up disabled",
+              description: "Email sign up is currently disabled. Please contact support.",
+              variant: "destructive",
+            });
+          } else {
+            throw error;
+          }
+        } else {
+          toast({
+            title: "Success!",
+            description: "Please check your email to verify your account.",
+          });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
