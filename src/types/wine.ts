@@ -1,4 +1,4 @@
-export interface WineFilters {
+export interface WineFilterOptions {
   country: string;
   region: string;
   grapeVariety: string;

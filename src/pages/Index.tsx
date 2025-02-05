@@ -4,12 +4,12 @@ import { WineGrid } from "@/components/wine/WineGrid";
 import { WineSearch } from "@/components/wine/WineSearch";
 import { AddWineDialog } from "@/components/wine/AddWineDialog";
 import { useWines } from "@/hooks/useWines";
-import type { WineFilters } from "@/types/wine";
+import type { WineFilterOptions } from "@/types/wine";
 
 const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const initialFilters: WineFilters = {
+  const initialFilters: WineFilterOptions = {
     country: "",
     region: "",
     grapeVariety: "",
@@ -17,7 +17,7 @@ const Index = () => {
     type: "all",
     sort: "recent"
   };
-  const [filters, setFilters] = useState<WineFilters>(initialFilters);
+  const [filters, setFilters] = useState<WineFilterOptions>(initialFilters);
 
   const { data: wines = [], isLoading } = useWines(filters, searchQuery);
 

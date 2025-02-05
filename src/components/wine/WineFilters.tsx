@@ -3,24 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { WineFilterOptions } from "@/types/wine";
 
 interface WineFiltersProps {
-  filters: {
-    country: string;
-    region: string;
-    grapeVariety: string;
-    minRating: string;
-    type: string;
-    sort: string;
-  };
-  setFilters: React.Dispatch<React.SetStateAction<{
-    country: string;
-    region: string;
-    grapeVariety: string;
-    minRating: string;
-    type: string;
-    sort: string;
-  }>>;
+  filters: WineFilterOptions;
+  setFilters: React.Dispatch<React.SetStateAction<WineFilterOptions>>;
   onReset: () => void;
 }
 
