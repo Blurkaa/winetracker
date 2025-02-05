@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { transformWineData } from "@/utils/wineTransformations";
-import type { WineFilters } from "@/types/wine";
+import type { WineFilterOptions } from "@/types/wine";
 
-export const useWines = (filters: WineFilters, searchQuery: string) => {
+export const useWines = (filters: WineFilterOptions, searchQuery: string) => {
   return useQuery({
     queryKey: ["wines", filters, searchQuery],
     queryFn: async () => {
