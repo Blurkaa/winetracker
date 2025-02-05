@@ -1,12 +1,27 @@
+import { useState } from "react";
 import { WineFormData } from "@/components/wine-form/types";
 import { WineCard } from "@/components/WineCard";
+import { EditWineDialog } from "./EditWineDialog";
 
 interface WineGridProps {
-  wines: WineFormData[];
+  wines: (WineFormData & { id: string })[];
   isLoading: boolean;
+  onWineUpdated: () => void;
 }
 
-export const WineGrid = ({ wines, isLoading }: WineGridProps) => {
+export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => {
+  const [selectedWine, setSelectedWine] = useState<(WineFormData & { id: string }) | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const handleEdit = (wine: WineFormData & { id: string }) => {
+    setSelectedWine(wine);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    onWineUpdated();
+  };
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -29,10 +44,26 @@ export const WineGrid = ({ wines, isLoading }: WineGridProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {wines.map((wine) => (
-        <WineCard key={wine.name} wine={wine} />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {wines.map((wine) => (
+          <WineCard 
+            key={wine.id} 
+            wine={wine} 
+            onEdit={() => handleEdit(wine)}
+            onDelete={() => handleDelete(wine.id)}
+          />
+        ))}
+      </div>
+
+      {selectedWine && (
+        <EditWineDialog
+          wine={selectedWine}
+          isOpen={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          onWineUpdated={onWineUpdated}
+        />
+      )}
+    </>
   );
 };
