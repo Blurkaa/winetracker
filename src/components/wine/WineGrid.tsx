@@ -30,6 +30,14 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   };
 
   const handleDelete = (id: string) => {
+    if (!id) {
+      toast({
+        title: "Error",
+        description: "Invalid wine ID",
+        variant: "destructive",
+      });
+      return;
+    }
     onWineUpdated();
   };
 
