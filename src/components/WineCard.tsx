@@ -40,6 +40,10 @@ interface WineCardProps {
   };
 }
 
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const WineCard = ({ wine }: WineCardProps) => {
   const renderStar = (position: number) => {
     const isHalfStar = wine.rating === position - 0.5;
@@ -91,7 +95,7 @@ export const WineCard = ({ wine }: WineCardProps) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <span className="text-muted-foreground">Type:</span>
-              <span className="font-medium ml-2">{wine.type}</span>
+              <span className="font-medium ml-2">{capitalizeFirstLetter(wine.type)}</span>
             </div>
             <div>
               <span className="text-muted-foreground">Price:</span>
@@ -126,44 +130,12 @@ export const WineCard = ({ wine }: WineCardProps) => {
             <span className="font-medium ml-2">{wine.grapeVariety.join(", ")}</span>
           </div>
 
-          <div className="mt-4">
-            <h4 className="font-semibold mb-2">WSET Evaluation</h4>
-            
-            <div className="space-y-4">
-              <div>
-                <h5 className="font-medium">Appearance</h5>
-                <p>
-                  {wine.appearance.clarity}, {wine.appearance.intensity}, 
-                  {wine.appearance.colours.join(", ")}
-                </p>
-              </div>
-
-              <div>
-                <h5 className="font-medium">Nose</h5>
-                <p>
-                  {wine.nose.condition}, {wine.nose.intensity} intensity
-                  {wine.nose.aromaCharacteristics && (
-                    <span className="block italic">{wine.nose.aromaCharacteristics}</span>
-                  )}
-                  Development: {wine.nose.development}
-                </p>
-              </div>
-
-              <div>
-                <h5 className="font-medium">Palate</h5>
-                <div className="grid grid-cols-2 gap-2">
-                  <p>Sweetness: {wine.palate.sweetness}</p>
-                  <p>Acidity: {wine.palate.acidity}</p>
-                  <p>Tannin: {wine.palate.tannin}</p>
-                  <p>Body: {wine.palate.body}</p>
-                  <p>Alcohol: {wine.palate.alcohol}</p>
-                  {wine.type === "sparkling" && <p>Mousse: {wine.palate.mousse}</p>}
-                  <p>Flavour Intensity: {wine.palate.flavourIntensity}</p>
-                  <p>Finish: {wine.palate.finish}</p>
-                </div>
-              </div>
+          {wine.nose.aromaCharacteristics && (
+            <div className="mt-4">
+              <h4 className="font-semibold mb-2">Aromas</h4>
+              <p className="italic">{wine.nose.aromaCharacteristics}</p>
             </div>
-          </div>
+          )}
 
           {wine.notes && (
             <p className="text-muted-foreground mt-4 italic">{wine.notes}</p>
