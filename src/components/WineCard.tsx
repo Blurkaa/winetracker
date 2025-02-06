@@ -59,7 +59,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
     if (!wine?.id) {
       toast({
         title: "Error",
-        description: "Invalid wine ID",
+        description: "Wine ID is missing",
         variant: "destructive",
       });
       return;
@@ -101,7 +101,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
     if (!wine?.id) {
       toast({
         title: "Error",
-        description: "Invalid wine ID",
+        description: "Wine ID is missing",
         variant: "destructive",
       });
       return;
