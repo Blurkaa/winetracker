@@ -56,10 +56,10 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    if (!wine?.id) {
+    if (!wine || typeof wine.id !== 'string') {
       toast({
         title: "Error",
-        description: "Wine ID is missing",
+        description: "Wine ID is missing or invalid",
         variant: "destructive",
       });
       return;
@@ -72,6 +72,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
         .eq('id', wine.id);
 
       if (error) {
+        console.error("Delete error:", error);
         toast({
           title: "Error",
           description: "Failed to delete wine",
@@ -89,6 +90,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
         onDelete(wine.id);
       }
     } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -98,10 +100,10 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   };
 
   const handleEdit = () => {
-    if (!wine?.id) {
+    if (!wine || typeof wine.id !== 'string') {
       toast({
         title: "Error",
-        description: "Wine ID is missing",
+        description: "Wine ID is missing or invalid",
         variant: "destructive",
       });
       return;
