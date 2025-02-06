@@ -18,6 +18,7 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   const handleEdit = (id: string) => {
     const wine = wines.find(w => w.id === id);
     if (!wine) {
+      console.error("Wine not found:", id);
       toast({
         title: "Error",
         description: "Wine not found",
@@ -31,6 +32,7 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
 
   const handleDelete = (id: string) => {
     if (!id) {
+      console.error("Invalid wine ID for deletion:", id);
       toast({
         title: "Error",
         description: "Invalid wine ID",

@@ -21,16 +21,6 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    if (!wine.id) {
-      console.error("Wine ID is missing");
-      toast({
-        title: "Error",
-        description: "Cannot delete wine: ID is missing",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       const { error } = await supabase
         .from('wines')
@@ -64,15 +54,6 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   };
 
   const handleEdit = () => {
-    if (!wine.id) {
-      console.error("Wine ID is missing");
-      toast({
-        title: "Error",
-        description: "Cannot edit wine: ID is missing",
-        variant: "destructive",
-      });
-      return;
-    }
     onEdit(wine.id);
   };
 
