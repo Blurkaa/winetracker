@@ -30,12 +30,13 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (!id) {
-      console.error("Invalid wine ID for deletion:", id);
+  const handleDelete = async (id: string) => {
+    const wine = wines.find(w => w.id === id);
+    if (!wine) {
+      console.error("Wine not found for deletion:", id);
       toast({
         title: "Error",
-        description: "Invalid wine ID",
+        description: "Wine not found",
         variant: "destructive",
       });
       return;
