@@ -1,5 +1,4 @@
 export interface WineFormData {
-  id?: string;  // Keep optional for new wines
   name: string;
   producer: string;
   region: string;
@@ -9,7 +8,7 @@ export interface WineFormData {
   price: number;
   type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
   alcoholLevel: number;
-  grapeVariety: string[];
+  grapeVariety: string[];  // Changed from string to string[]
   rating: number;
   imageUrl?: string;
   appearance: {
@@ -35,6 +34,3 @@ export interface WineFormData {
   };
   notes?: string;
 }
-
-// New type for existing wines where ID is required
-export type ExistingWineData = WineFormData & { id: string };

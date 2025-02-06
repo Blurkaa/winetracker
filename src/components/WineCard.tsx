@@ -1,62 +1,46 @@
-import { Star, StarHalf, MoreVertical, Edit, Trash } from "lucide-react";
+import { Star, StarHalf } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { ExistingWineData } from "./wine-form/types";
 
 interface WineCardProps {
-  wine: ExistingWineData;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  wine: {
+    name: string;
+    producer: string;
+    region: string;
+    country: string;
+    appellation: string;
+    vintage: number;
+    price: number;
+    type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
+    alcoholLevel: number;
+    grapeVariety: string[];
+    rating: number;
+    imageUrl?: string;
+    appearance: {
+      clarity: "clear" | "hazy";
+      intensity: "pale" | "medium" | "deep";
+      colours: string[];
+    };
+    nose: {
+      condition: "clean" | "unclean";
+      intensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
+      aromaCharacteristics: string;
+      development: "youthful" | "developing" | "fully developed" | "tired";
+    };
+    palate: {
+      sweetness: "dry" | "off-dry" | "medium-dry" | "medium-sweet" | "sweet" | "luscious";
+      acidity: "low" | "medium-" | "medium" | "medium+" | "high";
+      tannin: "low" | "medium-" | "medium" | "medium+" | "high";
+      alcohol: "low" | "medium" | "high";
+      body: "light" | "medium-" | "medium" | "medium+" | "full";
+      mousse?: "delicate" | "creamy" | "aggressive";
+      flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
+      finish: "short" | "medium-" | "medium" | "medium+" | "long";
+    };
+    notes?: string;
+  };
 }
 
-export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
-  const { toast } = useToast();
-
-  const handleDelete = async () => {
-    try {
-      const { error } = await supabase
-        .from('wines')
-        .delete()
-        .eq('id', wine.id);
-
-      if (error) {
-        console.error("Delete error:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete wine",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Success",
-        description: "Wine deleted successfully",
-      });
-
-      onDelete(wine.id);
-    } catch (error) {
-      console.error("Unexpected error:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleEdit = () => {
-    onEdit(wine.id);
-  };
-
+export const WineCard = ({ wine }: WineCardProps) => {
   const renderStar = (position: number) => {
     const isHalfStar = wine.rating === position - 0.5;
     const isFullStar = wine.rating >= position;
@@ -88,27 +72,8 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
             <h3 className="font-playfair text-xl font-semibold text-wine">{wine.name}</h3>
             <p className="text-sm text-muted-foreground">{wine.producer}</p>
           </div>
-          <div className="flex items-start gap-2">
-            <div className="flex gap-0.5">
-              {[1, 2, 3, 4, 5].map((position) => renderStar(position))}
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleEdit}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleDelete} className="text-red-600">
-                  <Trash className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((position) => renderStar(position))}
           </div>
         </div>
       </CardHeader>
@@ -130,7 +95,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
             </div>
             <div>
               <span className="text-muted-foreground">Price:</span>
-              <span className="font-medium ml-2">€{wine.price}</span>
+              <span className="font-medium ml-2">${wine.price}</span>
             </div>
           </div>
           

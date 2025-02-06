@@ -1,49 +1,12 @@
-import { useState } from "react";
-import { WineFormData, ExistingWineData } from "@/components/wine-form/types";
+import { WineFormData } from "@/components/wine-form/types";
 import { WineCard } from "@/components/WineCard";
-import { EditWineDialog } from "./EditWineDialog";
-import { useToast } from "@/hooks/use-toast";
 
 interface WineGridProps {
-  wines: ExistingWineData[];
+  wines: WineFormData[];
   isLoading: boolean;
-  onWineUpdated: () => void;
 }
 
-export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => {
-  const [selectedWine, setSelectedWine] = useState<ExistingWineData | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleEdit = (id: string) => {
-    const wine = wines.find(w => w.id === id);
-    if (!wine) {
-      console.error("Wine not found:", id);
-      toast({
-        title: "Error",
-        description: "Wine not found",
-        variant: "destructive",
-      });
-      return;
-    }
-    setSelectedWine(wine);
-    setIsEditDialogOpen(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    const wine = wines.find(w => w.id === id);
-    if (!wine) {
-      console.error("Wine not found for deletion:", id);
-      toast({
-        title: "Error",
-        description: "Wine not found",
-        variant: "destructive",
-      });
-      return;
-    }
-    onWineUpdated();
-  };
-
+export const WineGrid = ({ wines, isLoading }: WineGridProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -66,26 +29,10 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
   }
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wines.map((wine) => (
-          <WineCard 
-            key={wine.id}
-            wine={wine} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
-
-      {selectedWine && (
-        <EditWineDialog
-          wine={selectedWine}
-          isOpen={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          onWineUpdated={onWineUpdated}
-        />
-      )}
-    </>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {wines.map((wine) => (
+        <WineCard key={wine.name} wine={wine} />
+      ))}
+    </div>
   );
 };

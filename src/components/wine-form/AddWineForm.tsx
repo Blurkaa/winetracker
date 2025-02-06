@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,11 @@ import { WineFormData } from "./types";
 
 interface AddWineFormProps {
   onSubmit: (wine: WineFormData) => void;
-  initialData?: WineFormData;
 }
 
-export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
+export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
   const { toast } = useToast();
-  const [rating, setRating] = useState(initialData?.rating || 0);
+  const [rating, setRating] = useState(0);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   
   const [formData, setFormData] = useState<WineFormData>({
@@ -55,13 +54,6 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
     },
   });
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-      setRating(initialData.rating || 0);
-    }
-  }, [initialData]);
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
@@ -79,12 +71,51 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       return;
     }
 
-    let imageUrl = formData.imageUrl;
+    let imageUrl;
     if (selectedImage) {
       imageUrl = URL.createObjectURL(selectedImage);
     }
 
     onSubmit({ ...formData, rating, imageUrl });
+    setFormData({
+      name: "",
+      producer: "",
+      region: "",
+      country: "",
+      appellation: "",
+      vintage: new Date().getFullYear(),
+      price: 0,
+      type: "red",
+      alcoholLevel: 12,
+      grapeVariety: [],
+      rating: 0,
+      appearance: {
+        clarity: "clear",
+        intensity: "medium",
+        colours: [],
+      },
+      nose: {
+        condition: "clean",
+        intensity: "medium",
+        aromaCharacteristics: "",
+        development: "youthful",
+      },
+      palate: {
+        sweetness: "dry",
+        acidity: "medium",
+        tannin: "medium",
+        alcohol: "medium",
+        body: "medium",
+        flavourIntensity: "medium",
+        finish: "medium",
+      },
+    });
+    setRating(0);
+    setSelectedImage(null);
+    toast({
+      title: "Wine Added",
+      description: "Your wine has been added to the collection.",
+    });
   };
 
   const handleFormUpdate = (updates: Partial<WineFormData>) => {
@@ -108,11 +139,7 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
         </div>
       </div>
 
-      <WineImage 
-        selectedImage={selectedImage} 
-        onImageChange={handleImageChange}
-        existingImageUrl={formData.imageUrl}
-      />
+      <WineImage selectedImage={selectedImage} onImageChange={handleImageChange} />
 
       <div className="space-y-2">
         <Label htmlFor="notes">Additional Notes</Label>
@@ -126,7 +153,7 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       </div>
 
       <Button type="submit" className="w-full bg-wine hover:bg-wine-light">
-        {initialData ? 'Update Wine' : 'Add Wine'}
+        Add Wine
       </Button>
     </form>
   );

@@ -113,18 +113,14 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="price">Price (€)</Label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2">€</span>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              value={formData.price}
-              onChange={(e) => onUpdate({ price: Number(e.target.value) })}
-              className="pl-7"
-            />
-          </div>
+          <Label htmlFor="price">Price</Label>
+          <Input
+            id="price"
+            type="number"
+            step="0.01"
+            value={formData.price}
+            onChange={(e) => onUpdate({ price: Number(e.target.value) })}
+          />
         </div>
       </div>
 
