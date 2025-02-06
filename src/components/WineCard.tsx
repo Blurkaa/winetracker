@@ -9,62 +9,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ExistingWineData } from "./wine-form/types";
 
 interface WineCardProps {
-  wine: {
-    id: string;
-    name: string;
-    producer: string;
-    region: string;
-    country: string;
-    appellation: string;
-    vintage: number;
-    price: number;
-    type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
-    alcoholLevel: number;
-    grapeVariety: string[];
-    rating: number;
-    imageUrl?: string;
-    appearance: {
-      clarity: "clear" | "hazy";
-      intensity: "pale" | "medium" | "deep";
-      colours: string[];
-    };
-    nose: {
-      condition: "clean" | "unclean";
-      intensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-      aromaCharacteristics: string;
-      development: "youthful" | "developing" | "fully developed" | "tired";
-    };
-    palate: {
-      sweetness: "dry" | "off-dry" | "medium-dry" | "medium-sweet" | "sweet" | "luscious";
-      acidity: "low" | "medium-" | "medium" | "medium+" | "high";
-      tannin: "low" | "medium-" | "medium" | "medium+" | "high";
-      alcohol: "low" | "medium" | "high";
-      body: "light" | "medium-" | "medium" | "medium+" | "full";
-      mousse?: "delicate" | "creamy" | "aggressive";
-      flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-      finish: "short" | "medium-" | "medium" | "medium+" | "long";
-    };
-    notes?: string;
-  };
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  wine: ExistingWineData;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    if (!wine || typeof wine.id !== 'string') {
-      toast({
-        title: "Error",
-        description: "Wine ID is missing or invalid",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       const { error } = await supabase
         .from('wines')
@@ -86,9 +42,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
         description: "Wine deleted successfully",
       });
 
-      if (onDelete) {
-        onDelete(wine.id);
-      }
+      onDelete(wine.id);
     } catch (error) {
       console.error("Unexpected error:", error);
       toast({
@@ -100,18 +54,7 @@ export const WineCard = ({ wine, onEdit, onDelete }: WineCardProps) => {
   };
 
   const handleEdit = () => {
-    if (!wine || typeof wine.id !== 'string') {
-      toast({
-        title: "Error",
-        description: "Wine ID is missing or invalid",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (onEdit) {
-      onEdit(wine.id);
-    }
+    onEdit(wine.id);
   };
 
   const renderStar = (position: number) => {

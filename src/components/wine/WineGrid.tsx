@@ -17,20 +17,6 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
 
   const handleEdit = (id: string) => {
     const wine = wines.find(w => w.id === id);
-    if (wine) {
-      setSelectedWine(wine);
-      setIsEditDialogOpen(true);
-    } else {
-      toast({
-        title: "Error",
-        description: "Wine not found",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    const wine = wines.find(w => w.id === id);
     if (!wine) {
       toast({
         title: "Error",
@@ -39,6 +25,11 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
       });
       return;
     }
+    setSelectedWine(wine);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
     onWineUpdated();
   };
 
@@ -68,10 +59,10 @@ export const WineGrid = ({ wines, isLoading, onWineUpdated }: WineGridProps) => 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {wines.map((wine) => (
           <WineCard 
-            key={wine.id} 
+            key={wine.id}
             wine={wine} 
-            onEdit={() => handleEdit(wine.id)}
-            onDelete={() => handleDelete(wine.id)}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
           />
         ))}
       </div>
