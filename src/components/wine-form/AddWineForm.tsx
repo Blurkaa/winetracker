@@ -66,6 +66,18 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
     }
   }, [initialData]);
 
+  const handleColourChange = (colour: string, isChecked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      appearance: {
+        ...prev.appearance,
+        colours: isChecked 
+          ? [...prev.appearance.colours, colour.toLowerCase()]
+          : prev.appearance.colours.filter(c => c !== colour.toLowerCase())
+      }
+    }));
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
@@ -695,4 +707,3 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       </Button>
     </form>
   );
-};
