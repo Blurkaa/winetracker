@@ -1,5 +1,6 @@
+
 export interface WineFormData {
-  id?: string;  // Added id as optional property
+  id?: string;
   name: string;
   producer: string;
   region: string;
@@ -11,7 +12,6 @@ export interface WineFormData {
   alcoholLevel: number;
   grapeVariety: string[];
   rating: number;
-  imageUrl?: string;
   appearance: {
     clarity: "clear" | "hazy";
     intensity: "pale" | "medium" | "deep";

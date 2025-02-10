@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Star, Upload } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,52 +14,16 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-
-interface WineFormData {
-  name: string;
-  producer: string;
-  region: string;
-  country: string;
-  appellation: string;
-  vintage: number;
-  price: number;
-  type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
-  alcoholLevel: number;
-  grapeVariety: string;
-  rating: number;
-  imageUrl?: string;
-  appearance: {
-    clarity: "clear" | "hazy";
-    intensity: "pale" | "medium" | "deep";
-    colours: string[];
-  };
-  nose: {
-    condition: "clean" | "unclean";
-    intensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-    aromaCharacteristics: string;
-    development: "youthful" | "developing" | "fully developed" | "tired";
-  };
-  palate: {
-    sweetness: "dry" | "off-dry" | "medium-dry" | "medium-sweet" | "sweet" | "luscious";
-    acidity: "low" | "medium-" | "medium" | "medium+" | "high";
-    tannin: "low" | "medium-" | "medium" | "medium+" | "high";
-    alcohol: "low" | "medium" | "high";
-    body: "light" | "medium-" | "medium" | "medium+" | "full";
-    mousse?: "delicate" | "creamy" | "aggressive";
-    flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
-    finish: "short" | "medium-" | "medium" | "medium+" | "long";
-  };
-  notes?: string;
-}
+import type { WineFormData } from "@/components/wine-form/types";
 
 interface AddWineFormProps {
   onSubmit: (wine: WineFormData) => void;
+  initialData?: WineFormData;
 }
 
-export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
+export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
   const { toast } = useToast();
   const [rating, setRating] = useState(0);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   
   const [formData, setFormData] = useState<WineFormData>({
     name: "",
@@ -71,7 +35,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
     price: 0,
     type: "red",
     alcoholLevel: 12,
-    grapeVariety: "",
+    grapeVariety: [],
     rating: 0,
     appearance: {
       clarity: "clear",
@@ -95,6 +59,13 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+      setRating(initialData.rating || 0);
+    }
+  }, [initialData]);
+
   const wineColourOptions = {
     white: ["lemon-green", "lemon", "gold", "amber", "brown"],
     rosé: ["pink", "salmon", "orange"],
@@ -107,21 +78,15 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       appearance: {
         ...prev.appearance,
         colours: isChecked 
-          ? [...prev.appearance.colours, colour]
-          : prev.appearance.colours.filter(c => c !== colour)
+          ? [...prev.appearance.colours, colour.toLowerCase()]
+          : prev.appearance.colours.filter(c => c !== colour.toLowerCase())
       }
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedImage(e.target.files[0]);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.producer || !formData.region || !formData.grapeVariety) {
+    if (!formData.name || !formData.producer || !formData.region || !formData.grapeVariety.length) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -130,12 +95,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       return;
     }
 
-    let imageUrl;
-    if (selectedImage) {
-      imageUrl = URL.createObjectURL(selectedImage);
-    }
-
-    onSubmit({ ...formData, rating, imageUrl });
+    onSubmit({ ...formData, rating });
     setFormData({
       name: "",
       producer: "",
@@ -146,7 +106,7 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       price: 0,
       type: "red",
       alcoholLevel: 12,
-      grapeVariety: "",
+      grapeVariety: [],
       rating: 0,
       appearance: {
         clarity: "clear",
@@ -170,7 +130,6 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
       },
     });
     setRating(0);
-    setSelectedImage(null);
     toast({
       title: "Wine Added",
       description: "Your wine has been added to the collection.",
@@ -704,33 +663,6 @@ export const AddWineForm = ({ onSubmit }: AddWineFormProps) => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Wine Image</Label>
-        <div className="flex items-center justify-center w-full">
-          <label
-            htmlFor="wine-image"
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <Upload className="w-8 h-8 mb-2 text-gray-500" />
-              <p className="text-sm text-gray-500">Click to upload wine image</p>
-            </div>
-            <input
-              id="wine-image"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </label>
-        </div>
-        {selectedImage && (
-          <p className="text-sm text-muted-foreground">
-            Selected: {selectedImage.name}
-          </p>
-        )}
       </div>
 
       <div className="space-y-2">

@@ -1,3 +1,4 @@
+
 import { Star, StarHalf } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { WineDetailsDialog } from "@/components/wine/WineDetailsDialog";
@@ -16,7 +17,6 @@ interface WineCardProps {
     alcoholLevel: number;
     grapeVariety: string[];
     rating: number;
-    imageUrl?: string;
     appearance: {
       clarity: "clear" | "hazy";
       intensity: "pale" | "medium" | "deep";
@@ -48,7 +48,6 @@ const capitalizeFirstLetter = (string: string) => {
 
 export const WineCard = ({ wine }: WineCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [imageError, setImageError] = useState(false);
   
   const renderStar = (position: number) => {
     const isHalfStar = wine.rating === position - 0.5;
@@ -91,20 +90,6 @@ export const WineCard = ({ wine }: WineCardProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          {(wine.imageUrl && !imageError) ? (
-            <div className="mb-4">
-              <img
-                src={wine.imageUrl}
-                alt={wine.name}
-                className="rounded-md object-cover w-full h-[400px]"
-                onError={() => setImageError(true)}
-              />
-            </div>
-          ) : (
-            <div className="mb-4 bg-gray-100 rounded-md w-full h-[400px] flex items-center justify-center">
-              <p className="text-gray-400">No image available</p>
-            </div>
-          )}
           <div className="space-y-2 text-sm">
             <div className="grid grid-cols-2 gap-4">
               <div>
