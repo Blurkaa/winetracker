@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,7 +25,7 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
       
       if (!error && data) {
         const uniqueGrapes = Array.from(new Set(
-          data.flatMap(wine => wine.grape_variety)
+          data.flatMap(wine => wine.grape_variety || [])
         )).sort();
         setExistingGrapes(uniqueGrapes);
       }
@@ -127,7 +128,7 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
         <Label>Wine Type</Label>
         <Select
           value={formData.type}
-          onValueChange={(value: any) => onUpdate({ type: value })}
+          onValueChange={(value: WineFormData["type"]) => onUpdate({ type: value })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select wine type" />

@@ -1,5 +1,6 @@
 
 export interface WineFormData {
+  id?: string;
   name: string;
   producer: string;
   region: string;
@@ -34,4 +35,3 @@ export interface WineFormData {
   };
   notes?: string;
 }
-
