@@ -249,9 +249,12 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
           <Label htmlFor="grapeVariety">Grape Variety *</Label>
           <Input
             id="grapeVariety"
-            value={formData.grapeVariety}
-            onChange={(e) => setFormData({ ...formData, grapeVariety: e.target.value })}
-            placeholder="e.g. Cabernet Sauvignon"
+            value={formData.grapeVariety.join(", ")}
+            onChange={(e) => setFormData({ 
+              ...formData, 
+              grapeVariety: e.target.value.split(",").map(grape => grape.trim()).filter(grape => grape !== "") 
+            })}
+            placeholder="e.g. Cabernet Sauvignon, Merlot"
           />
         </div>
       </div>
