@@ -23,7 +23,6 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
         .select('grape_variety');
       
       if (!error && data) {
-        // Flatten the array of arrays and remove duplicates
         const uniqueGrapes = Array.from(new Set(
           data.flatMap(wine => wine.grape_variety)
         )).sort();
