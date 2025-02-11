@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { WineFilters } from "@/components/wine/WineFilters";
@@ -8,7 +9,7 @@ import { useWines } from "@/hooks/useWines";
 import type { WineFilterOptions } from "@/types/wine";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut } from "lucide-react";
+import { LogOut, UserCircle } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -46,6 +47,14 @@ const Index = () => {
               isOpen={isDialogOpen}
               onOpenChange={setIsDialogOpen}
             />
+            <Button
+              variant="outline"
+              onClick={() => navigate("/account")}
+              className="flex items-center gap-2"
+            >
+              <UserCircle className="w-4 h-4" />
+              Account
+            </Button>
             <Button
               variant="outline"
               onClick={handleLogout}
