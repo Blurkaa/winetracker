@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -19,7 +21,20 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth?reset=true`,
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Check your email",
+          description: "We've sent you a password reset link.",
+        });
+        
+        setIsForgotPassword(false);
+      } else if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -67,15 +82,26 @@ const Auth = () => {
     }
   };
 
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
+    setIsForgotPassword(false);
+  };
+
   return (
     <div className="min-h-screen bg-cream flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-lg shadow-lg">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-wine">
-            {isSignUp ? "Create Account" : "Welcome Back"}
+            {isForgotPassword
+              ? "Reset Password"
+              : isSignUp
+              ? "Create Account"
+              : "Welcome Back"}
           </h2>
           <p className="mt-2 text-gray-600">
-            {isSignUp
+            {isForgotPassword
+              ? "Enter your email to receive a password reset link"
+              : isSignUp
               ? "Sign up to start tracking your wine collection"
               : "Sign in to access your wine collection"}
           </p>
@@ -93,16 +119,18 @@ const Auth = () => {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+          {!isForgotPassword && (
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+          )}
 
           <Button
             type="submit"
@@ -111,22 +139,46 @@ const Auth = () => {
           >
             {isLoading
               ? "Loading..."
+              : isForgotPassword
+              ? "Send Reset Link"
               : isSignUp
               ? "Create Account"
               : "Sign In"}
           </Button>
         </form>
 
-        <div className="text-center">
-          <button
-            type="button"
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-wine hover:underline"
-          >
-            {isSignUp
-              ? "Already have an account? Sign in"
-              : "Need an account? Sign up"}
-          </button>
+        <div className="text-center space-y-2">
+          {!isForgotPassword && (
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="text-wine hover:underline block w-full"
+            >
+              {isSignUp
+                ? "Already have an account? Sign in"
+                : "Need an account? Sign up"}
+            </button>
+          )}
+          
+          {!isSignUp && !isForgotPassword && (
+            <button
+              type="button"
+              onClick={() => setIsForgotPassword(true)}
+              className="text-wine hover:underline block w-full"
+            >
+              Forgot your password?
+            </button>
+          )}
+
+          {isForgotPassword && (
+            <button
+              type="button"
+              onClick={() => setIsForgotPassword(false)}
+              className="text-wine hover:underline block w-full"
+            >
+              Back to sign in
+            </button>
+          )}
         </div>
       </div>
     </div>
