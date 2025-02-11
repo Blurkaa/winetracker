@@ -1,3 +1,4 @@
+
 import type { WineFormData } from "@/components/wine-form/types";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -15,7 +16,6 @@ export const transformWineData = (wine: WineRow): WineFormData => ({
   alcoholLevel: Number(wine.alcohol_level || 0),
   grapeVariety: wine.grape_variety || [],
   rating: wine.rating || 0,
-  imageUrl: wine.image_url,
   appearance: {
     clarity: ((wine.appearance as any)?.clarity || "clear") as "clear" | "hazy",
     intensity: ((wine.appearance as any)?.intensity || "medium") as "pale" | "medium" | "deep",

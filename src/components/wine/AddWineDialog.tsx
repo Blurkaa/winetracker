@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -24,7 +25,6 @@ export const AddWineDialog = ({ isOpen, onOpenChange }: AddWineDialogProps) => {
       alcohol_level: wine.alcoholLevel,
       grape_variety: Array.isArray(wine.grapeVariety) ? wine.grapeVariety : [wine.grapeVariety],
       rating: wine.rating,
-      image_url: wine.imageUrl,
       appearance: wine.appearance,
       nose: wine.nose,
       palate: wine.palate,

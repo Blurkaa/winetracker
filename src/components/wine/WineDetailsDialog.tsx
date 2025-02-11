@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WineFormData } from "@/components/wine-form/types";
@@ -111,16 +112,6 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
             </DialogHeader>
 
             <div className="space-y-6">
-              {wine.imageUrl && (
-                <div className="mb-4">
-                  <img
-                    src={wine.imageUrl}
-                    alt={wine.name}
-                    className="rounded-md object-cover w-full h-[400px]"
-                  />
-                </div>
-              )}
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <span className="text-muted-foreground">Type:</span>
