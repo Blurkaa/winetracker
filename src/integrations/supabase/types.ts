@@ -46,6 +46,7 @@ export type Database = {
           rating: number | null
           region: string
           type: string
+          user_id: string
           vintage: number
         }
         Insert: {
@@ -66,6 +67,7 @@ export type Database = {
           rating?: number | null
           region: string
           type: string
+          user_id: string
           vintage: number
         }
         Update: {
@@ -86,6 +88,7 @@ export type Database = {
           rating?: number | null
           region?: string
           type?: string
+          user_id?: string
           vintage?: number
         }
         Relationships: []

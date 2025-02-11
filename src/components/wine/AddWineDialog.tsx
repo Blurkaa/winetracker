@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { AddWineForm } from "@/components/wine-form/AddWineForm";
 import { supabase } from "@/integrations/supabase/client";
 import type { WineFormData } from "@/components/wine-form/types";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AddWineDialogProps {
   isOpen: boolean;
@@ -12,7 +13,20 @@ interface AddWineDialogProps {
 }
 
 export const AddWineDialog = ({ isOpen, onOpenChange }: AddWineDialogProps) => {
+  const { toast } = useToast();
+
   const handleAddWine = async (wine: WineFormData) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add wines",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const { error } = await supabase.from("wines").insert([{
       name: wine.name,
       producer: wine.producer,
@@ -28,14 +42,24 @@ export const AddWineDialog = ({ isOpen, onOpenChange }: AddWineDialogProps) => {
       appearance: wine.appearance,
       nose: wine.nose,
       palate: wine.palate,
-      notes: wine.notes
+      notes: wine.notes,
+      user_id: user.id
     }]);
 
     if (error) {
       console.error("Error adding wine:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add wine. Please try again.",
+        variant: "destructive",
+      });
       return;
     }
 
+    toast({
+      title: "Success",
+      description: "Wine added to your collection",
+    });
     onOpenChange(false);
   };
 

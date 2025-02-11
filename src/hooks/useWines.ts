@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { transformWineData } from "@/utils/wineTransformations";
@@ -7,9 +8,16 @@ export const useWines = (filters: WineFilterOptions, searchQuery: string) => {
   return useQuery({
     queryKey: ["wines", filters, searchQuery],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return [];
+      }
+
       let query = supabase
         .from("wines")
-        .select("*");
+        .select("*")
+        .eq('user_id', user.id);
 
       // Apply search filter
       if (searchQuery) {
