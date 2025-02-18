@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WineFormData } from "@/components/wine-form/types";
@@ -43,6 +42,8 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
 
   const handleSubmit = async (updatedWine: WineFormData) => {
     try {
+      const ratingAsInteger = Math.round(updatedWine.rating * 2);
+      
       const { error } = await supabase
         .from('wines')
         .update({
@@ -56,7 +57,7 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
           type: updatedWine.type,
           alcohol_level: updatedWine.alcoholLevel,
           grape_variety: updatedWine.grapeVariety,
-          rating: updatedWine.rating,
+          rating: ratingAsInteger,
           appearance: updatedWine.appearance,
           nose: updatedWine.nose,
           palate: updatedWine.palate,
@@ -71,7 +72,10 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
         description: "The wine details have been successfully updated.",
       });
 
-      onWineUpdate?.(updatedWine);
+      onWineUpdate?.({
+        ...updatedWine,
+        rating: ratingAsInteger / 2
+      });
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating wine:', error);

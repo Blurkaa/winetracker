@@ -16,7 +16,7 @@ export const transformWineData = (wine: WineRow): WineFormData => ({
   type: wine.type as WineFormData['type'],
   alcoholLevel: Number(wine.alcohol_level || 0),
   grapeVariety: wine.grape_variety || [],
-  rating: wine.rating || 0,
+  rating: (wine.rating || 0) / 2, // Convert from integer (1-10) to decimal (0.5-5)
   appearance: {
     clarity: ((wine.appearance as any)?.clarity || "clear") as "clear" | "hazy",
     intensity: ((wine.appearance as any)?.intensity || "medium") as "pale" | "medium" | "deep",
