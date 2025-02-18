@@ -12,4 +12,3 @@ export const WineSubmitButton = ({ label }: WineSubmitButtonProps) => {
     </Button>
   );
 };
-

@@ -132,8 +132,7 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       </div>
 
       <WineNotes notes={formData.notes || ""} onUpdate={handleFormUpdate} />
-      <WineSubmitButton label="Add Wine" />
+      <WineSubmitButton label={initialData ? "Save Changes" : "Add Wine"} />
     </form>
   );
 };
-
