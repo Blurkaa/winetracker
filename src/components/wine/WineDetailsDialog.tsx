@@ -45,7 +45,23 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
     try {
       const { error } = await supabase
         .from('wines')
-        .update(updatedWine)
+        .update({
+          name: updatedWine.name,
+          producer: updatedWine.producer,
+          region: updatedWine.region,
+          country: updatedWine.country,
+          appellation: updatedWine.appellation,
+          vintage: updatedWine.vintage,
+          price: updatedWine.price,
+          type: updatedWine.type,
+          alcohol_level: updatedWine.alcoholLevel,
+          grape_variety: updatedWine.grapeVariety,
+          rating: updatedWine.rating,
+          appearance: updatedWine.appearance,
+          nose: updatedWine.nose,
+          palate: updatedWine.palate,
+          notes: updatedWine.notes
+        })
         .eq('id', wine.id);
 
       if (error) throw error;

@@ -5,6 +5,7 @@ import type { Database } from "@/integrations/supabase/types";
 type WineRow = Database['public']['Tables']['wines']['Row'];
 
 export const transformWineData = (wine: WineRow): WineFormData => ({
+  id: wine.id,
   name: wine.name,
   producer: wine.producer,
   region: wine.region,
