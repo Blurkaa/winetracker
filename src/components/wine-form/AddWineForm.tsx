@@ -51,7 +51,8 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       flavourIntensity: "medium",
       finish: "medium",
     },
-    notes: initialData?.notes || ""
+    notes: initialData?.notes || "",
+    ...(initialData?.id ? { id: initialData.id } : {})
   });
 
   const handleFormUpdate = (updates: Partial<WineFormData>) => {
@@ -73,44 +74,43 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
     }
 
     onSubmit({ ...formData, rating });
-    setFormData({
-      name: "",
-      producer: "",
-      region: "",
-      country: "",
-      appellation: "",
-      vintage: new Date().getFullYear(),
-      price: 0,
-      type: "red",
-      alcoholLevel: 12,
-      grapeVariety: [],
-      rating: 0,
-      appearance: {
-        clarity: "clear",
-        intensity: "medium",
-        colours: [],
-      },
-      nose: {
-        condition: "clean",
-        intensity: "medium",
-        aromaCharacteristics: "",
-        development: "youthful",
-      },
-      palate: {
-        sweetness: "dry",
-        acidity: "medium",
-        tannin: "medium",
-        alcohol: "medium",
-        body: "medium",
-        flavourIntensity: "medium",
-        finish: "medium",
-      },
-    });
-    setRating(0);
-    toast({
-      title: "Wine Added",
-      description: "Your wine has been added to the collection.",
-    });
+    
+    if (!initialData) {
+      setFormData({
+        name: "",
+        producer: "",
+        region: "",
+        country: "",
+        appellation: "",
+        vintage: new Date().getFullYear(),
+        price: 0,
+        type: "red",
+        alcoholLevel: 12,
+        grapeVariety: [],
+        rating: 0,
+        appearance: {
+          clarity: "clear",
+          intensity: "medium",
+          colours: [],
+        },
+        nose: {
+          condition: "clean",
+          intensity: "medium",
+          aromaCharacteristics: "",
+          development: "youthful",
+        },
+        palate: {
+          sweetness: "dry",
+          acidity: "medium",
+          tannin: "medium",
+          alcohol: "medium",
+          body: "medium",
+          flavourIntensity: "medium",
+          finish: "medium",
+        },
+      });
+      setRating(0);
+    }
   };
 
   return (
