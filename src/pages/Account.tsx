@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -65,17 +65,32 @@ const Account = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen bg-cream p-6">
       <div className="max-w-2xl mx-auto">
-        <Button
-          variant="ghost"
-          className="mb-6 flex items-center gap-2"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
+        <div className="flex justify-between items-center mb-6">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
+        </div>
 
         <h1 className="font-playfair text-3xl font-bold text-wine mb-8">Account Settings</h1>
 

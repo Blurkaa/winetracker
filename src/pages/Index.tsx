@@ -8,8 +8,7 @@ import { AddWineDialog } from "@/components/wine/AddWineDialog";
 import { useWines } from "@/hooks/useWines";
 import type { WineFilterOptions } from "@/types/wine";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { LogOut, UserCircle } from "lucide-react";
+import { UserCircle } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -32,11 +31,6 @@ const Index = () => {
     setSearchQuery("");
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
-  };
-
   return (
     <div className="min-h-screen bg-cream p-6">
       <div className="max-w-6xl mx-auto">
@@ -54,14 +48,6 @@ const Index = () => {
             >
               <UserCircle className="w-4 h-4" />
               Account
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
             </Button>
           </div>
         </div>
