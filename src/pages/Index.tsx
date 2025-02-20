@@ -8,7 +8,7 @@ import { AddWineDialog } from "@/components/wine/AddWineDialog";
 import { useWines } from "@/hooks/useWines";
 import type { WineFilterOptions } from "@/types/wine";
 import { Button } from "@/components/ui/button";
-import { UserCircle } from "lucide-react";
+import { UserCircle, Plus } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -37,10 +37,12 @@ const Index = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="font-playfair text-3xl font-bold text-wine">My Wine Collection</h1>
           <div className="flex gap-4">
-            <AddWineDialog 
-              isOpen={isDialogOpen}
-              onOpenChange={setIsDialogOpen}
-            />
+            <div className="hidden md:block">
+              <AddWineDialog 
+                isOpen={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+              />
+            </div>
             <Button
               variant="outline"
               onClick={() => navigate("/account")}
@@ -59,6 +61,21 @@ const Index = () => {
           onReset={handleReset}
         />
         <WineGrid wines={wines} isLoading={isLoading} />
+
+        {/* Floating Add Wine button for mobile */}
+        <div className="md:hidden fixed bottom-6 right-6">
+          <AddWineDialog 
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+          >
+            <Button 
+              className="bg-wine hover:bg-wine-light rounded-full w-14 h-14 shadow-lg"
+              size="icon"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </AddWineDialog>
+        </div>
       </div>
     </div>
   );
