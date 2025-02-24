@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -27,9 +28,12 @@ export const IntensityBasedSection = ({
               checked={value === option}
               onCheckedChange={(checked) => onChange(option, checked as boolean)}
             />
-            <Label htmlFor={`${label.toLowerCase()}-${option}`} className="capitalize">
+            <label
+              htmlFor={`${label.toLowerCase()}-${option}`}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize cursor-pointer"
+            >
               {customLabels[option] || option}
-            </Label>
+            </label>
           </div>
         ))}
       </div>

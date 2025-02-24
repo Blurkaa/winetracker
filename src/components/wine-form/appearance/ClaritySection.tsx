@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { WineFormData } from "../types";
@@ -21,9 +22,12 @@ export const ClaritySection = ({ clarity, onClarityChange }: ClaritySectionProps
               checked={clarity === option}
               onCheckedChange={(checked) => onClarityChange(option, checked as boolean)}
             />
-            <Label htmlFor={`clarity-${option}`} className="capitalize">
+            <label
+              htmlFor={`clarity-${option}`}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize cursor-pointer"
+            >
               {option}
-            </Label>
+            </label>
           </div>
         ))}
       </div>

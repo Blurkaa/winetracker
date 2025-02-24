@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { WineFormData } from "../types";
@@ -21,9 +22,12 @@ export const IntensitySection = ({ intensity, onIntensityChange }: IntensitySect
               checked={intensity === option}
               onCheckedChange={(checked) => onIntensityChange(option, checked as boolean)}
             />
-            <Label htmlFor={`intensity-${option}`} className="capitalize">
+            <label
+              htmlFor={`intensity-${option}`}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 capitalize cursor-pointer"
+            >
               {option}
-            </Label>
+            </label>
           </div>
         ))}
       </div>
