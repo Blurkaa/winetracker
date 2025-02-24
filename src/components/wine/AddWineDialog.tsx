@@ -10,9 +10,10 @@ import { useToast } from "@/components/ui/use-toast";
 interface AddWineDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  children?: React.ReactNode;
 }
 
-export const AddWineDialog = ({ isOpen, onOpenChange }: AddWineDialogProps) => {
+export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogProps) => {
   const { toast } = useToast();
 
   const handleAddWine = async (wine: WineFormData) => {
@@ -66,10 +67,12 @@ export const AddWineDialog = ({ isOpen, onOpenChange }: AddWineDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button className="bg-wine hover:bg-wine-light">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Wine
-        </Button>
+        {children || (
+          <Button className="bg-wine hover:bg-wine-light">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Wine
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
