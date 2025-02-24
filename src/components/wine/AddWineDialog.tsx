@@ -28,6 +28,9 @@ export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogP
       return;
     }
 
+    // Convert rating from 0-5 scale (with halves) to 0-10 integer scale
+    const ratingAsInteger = Math.round(wine.rating * 2);
+
     const { error } = await supabase.from("wines").insert([{
       name: wine.name,
       producer: wine.producer,
@@ -39,7 +42,7 @@ export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogP
       type: wine.type,
       alcohol_level: wine.alcoholLevel,
       grape_variety: Array.isArray(wine.grapeVariety) ? wine.grapeVariety : [wine.grapeVariety],
-      rating: wine.rating,
+      rating: ratingAsInteger, // Store as integer (0-10)
       appearance: wine.appearance,
       nose: wine.nose,
       palate: wine.palate,
