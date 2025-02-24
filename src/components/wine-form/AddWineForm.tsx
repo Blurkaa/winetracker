@@ -32,24 +32,24 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
     grapeVariety: initialData?.grapeVariety || [],
     rating: initialData?.rating || 0,
     appearance: initialData?.appearance || {
-      clarity: "clear",
-      intensity: "medium",
+      clarity: undefined,
+      intensity: undefined,
       colours: [],
     },
     nose: initialData?.nose || {
-      condition: "clean",
-      intensity: "medium",
+      condition: undefined,
+      intensity: undefined,
       aromaCharacteristics: "",
-      development: "youthful",
+      development: undefined,
     },
     palate: initialData?.palate || {
-      sweetness: "dry",
-      acidity: "medium",
-      tannin: "medium",
-      alcohol: "medium",
-      body: "medium",
-      flavourIntensity: "medium",
-      finish: "medium",
+      sweetness: undefined,
+      acidity: undefined,
+      tannin: undefined,
+      alcohol: undefined,
+      body: undefined,
+      flavourIntensity: undefined,
+      finish: undefined,
     },
     notes: initialData?.notes || "",
     ...(initialData?.id ? { id: initialData.id } : {})
@@ -73,6 +73,32 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       return;
     }
 
+    // Ensure all required fields are filled before submitting
+    const requiredFields = {
+      appearance: ['clarity', 'intensity'],
+      nose: ['condition', 'intensity', 'development'],
+      palate: ['sweetness', 'acidity', 'tannin', 'alcohol', 'body', 'flavourIntensity', 'finish']
+    };
+
+    const missingFields = [];
+    
+    for (const [section, fields] of Object.entries(requiredFields)) {
+      for (const field of fields) {
+        if (!formData[section][field]) {
+          missingFields.push(field);
+        }
+      }
+    }
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please complete all tasting note fields before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     onSubmit({ ...formData, rating });
     
     if (!initialData) {
@@ -89,25 +115,26 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
         grapeVariety: [],
         rating: 0,
         appearance: {
-          clarity: "clear",
-          intensity: "medium",
+          clarity: undefined,
+          intensity: undefined,
           colours: [],
         },
         nose: {
-          condition: "clean",
-          intensity: "medium",
+          condition: undefined,
+          intensity: undefined,
           aromaCharacteristics: "",
-          development: "youthful",
+          development: undefined,
         },
         palate: {
-          sweetness: "dry",
-          acidity: "medium",
-          tannin: "medium",
-          alcohol: "medium",
-          body: "medium",
-          flavourIntensity: "medium",
-          finish: "medium",
+          sweetness: undefined,
+          acidity: undefined,
+          tannin: undefined,
+          alcohol: undefined,
+          body: undefined,
+          flavourIntensity: undefined,
+          finish: undefined,
         },
+        notes: "",
       });
       setRating(0);
     }
