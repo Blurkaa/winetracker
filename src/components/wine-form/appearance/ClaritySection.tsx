@@ -19,17 +19,19 @@ export const ClaritySection = ({ clarity, onClarityChange }: ClaritySectionProps
           const id = `clarity-${option}`;
           return (
             <div key={option} className="flex items-center space-x-2">
-              <Checkbox
-                id={id}
-                checked={clarity === option}
-                onCheckedChange={(checked) => onClarityChange(option, checked as boolean)}
-              />
-              <Label
-                htmlFor={id}
-                className="cursor-pointer"
-              >
-                {option}
-              </Label>
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onClarityChange(option, clarity !== option)}>
+                <Checkbox
+                  id={id}
+                  checked={clarity === option}
+                  onCheckedChange={(checked) => onClarityChange(option, checked as boolean)}
+                />
+                <Label
+                  htmlFor={id}
+                  className="cursor-pointer select-none"
+                >
+                  {option}
+                </Label>
+              </div>
             </div>
           );
         })}
