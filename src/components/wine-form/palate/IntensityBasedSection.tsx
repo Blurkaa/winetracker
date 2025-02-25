@@ -14,7 +14,7 @@ export const IntensityBasedSection = ({
   label, 
   value, 
   onChange, 
-  options = ["low", "medium-", "medium", "medium+", "high"],
+  options = label === "Flavour Intensity" ? ["light", "medium-", "medium", "medium+", "pronounced"] : ["low", "medium-", "medium", "medium+", "high"],
   customLabels = {}
 }: IntensityBasedSectionProps) => {
   return (
