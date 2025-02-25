@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WineFormData } from "@/components/wine-form/types";
@@ -44,7 +43,6 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
 
   const handleSubmit = async (updatedWine: WineFormData) => {
     try {
-      // Convert rating to integer by multiplying by 2 and rounding
       const ratingAsInteger = Math.round(updatedWine.rating * 2);
       
       const { error } = await supabase
@@ -146,7 +144,7 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
                 </div>
                 <div>
                   <span className="text-muted-foreground">Price:</span>
-                  <span className="font-medium ml-2">${currentWine.price}</span>
+                  <span className="font-medium ml-2">€{currentWine.price}</span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Region:</span>

@@ -98,7 +98,7 @@ export const WineCard = ({ wine }: WineCardProps) => {
               </div>
               <div>
                 <span className="text-muted-foreground">Price:</span>
-                <span className="font-medium ml-2">${wine.price}</span>
+                <span className="font-medium ml-2">€{wine.price}</span>
               </div>
             </div>
             
