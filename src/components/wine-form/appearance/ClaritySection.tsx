@@ -30,7 +30,7 @@ export const ClaritySection = ({ clarity, onClarityChange }: ClaritySectionProps
               htmlFor={`clarity-${option}`}
               className="cursor-pointer select-none"
             >
-              {option}
+              {option.charAt(0).toUpperCase() + option.slice(1)}
             </Label>
           </div>
         ))}
