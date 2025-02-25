@@ -15,26 +15,25 @@ export const ClaritySection = ({ clarity, onClarityChange }: ClaritySectionProps
     <div className="space-y-2">
       <Label>Clarity</Label>
       <div className="flex gap-4">
-        {clarityOptions.map((option) => {
-          const id = `clarity-${option}`;
-          return (
-            <div key={option} className="flex items-center space-x-2">
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onClarityChange(option, clarity !== option)}>
-                <Checkbox
-                  id={id}
-                  checked={clarity === option}
-                  onCheckedChange={(checked) => onClarityChange(option, checked as boolean)}
-                />
-                <Label
-                  htmlFor={id}
-                  className="cursor-pointer select-none"
-                >
-                  {option}
-                </Label>
-              </div>
-            </div>
-          );
-        })}
+        {clarityOptions.map((option) => (
+          <div key={option} className="flex items-center space-x-2">
+            <Checkbox
+              id={`clarity-${option}`}
+              checked={clarity === option}
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  onClarityChange(option, true);
+                }
+              }}
+            />
+            <Label
+              htmlFor={`clarity-${option}`}
+              className="cursor-pointer select-none"
+            >
+              {option}
+            </Label>
+          </div>
+        ))}
       </div>
     </div>
   );
