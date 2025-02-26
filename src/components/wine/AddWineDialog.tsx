@@ -6,6 +6,7 @@ import { AddWineForm } from "@/components/wine-form/AddWineForm";
 import { supabase } from "@/integrations/supabase/client";
 import type { WineFormData } from "@/components/wine-form/types";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AddWineDialogProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface AddWineDialogProps {
 
 export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogProps) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleAddWine = async (wine: WineFormData) => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -59,6 +61,9 @@ export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogP
       });
       return;
     }
+
+    // Invalidate and refetch wines query
+    await queryClient.invalidateQueries({ queryKey: ['wines'] });
 
     toast({
       title: "Success",

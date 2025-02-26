@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WineFormData } from "@/components/wine-form/types";
@@ -6,6 +7,7 @@ import { useState } from "react";
 import { AddWineForm } from "@/components/wine-form/AddWineForm";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface WineDetailsDialogProps {
   wine: WineFormData;
@@ -22,6 +24,7 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
   const [isEditing, setIsEditing] = useState(false);
   const [currentWine, setCurrentWine] = useState(wine);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const renderStar = (position: number) => {
     const isHalfStar = currentWine.rating === position - 0.5;
@@ -75,6 +78,9 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
 
       setCurrentWine(updatedWineWithRating);
       onWineUpdate?.(updatedWineWithRating);
+
+      // Invalidate and refetch wines query
+      await queryClient.invalidateQueries({ queryKey: ['wines'] });
 
       toast({
         title: "Wine Updated",
