@@ -25,7 +25,7 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
     region: initialData?.region || "",
     country: initialData?.country || "",
     appellation: initialData?.appellation || "",
-    vintage: initialData?.vintage || new Date().getFullYear(),
+    vintage: initialData?.vintage ?? new Date().getFullYear(), // Use nullish coalescing to allow 0 or undefined
     price: initialData?.price || 0,
     type: initialData?.type || "red",
     alcoholLevel: initialData?.alcoholLevel || 12,
@@ -72,7 +72,6 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
         producer: "Producer",
         region: "Region",
         country: "Country",
-        vintage: "Vintage",
       },
       grapeVariety: "Grape variety",
       appearance: {
