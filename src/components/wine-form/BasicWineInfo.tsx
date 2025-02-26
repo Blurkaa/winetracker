@@ -1,12 +1,9 @@
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
 import { WineFormData } from "./types";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { WineIdentification } from "./basic-info/WineIdentification";
+import { WineOrigin } from "./basic-info/WineOrigin";
+import { WineDetails } from "./basic-info/WineDetails";
+import { GrapeVarieties } from "./basic-info/GrapeVarieties";
 
 interface BasicWineInfoProps {
   formData: WineFormData;
@@ -14,205 +11,35 @@ interface BasicWineInfoProps {
 }
 
 export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
-  const [grapeInput, setGrapeInput] = useState("");
-  const [existingGrapes, setExistingGrapes] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchExistingGrapes = async () => {
-      const { data, error } = await supabase
-        .from('wines')
-        .select('grape_variety');
-      
-      if (!error && data) {
-        const uniqueGrapes = Array.from(new Set(
-          data.flatMap(wine => wine.grape_variety || [])
-        )).sort();
-        setExistingGrapes(uniqueGrapes);
-      }
-    };
-
-    fetchExistingGrapes();
-  }, []);
-
-  const handleAddGrape = (grape: string) => {
-    if (grape && !formData.grapeVariety.includes(grape)) {
-      onUpdate({ grapeVariety: [...formData.grapeVariety, grape] });
-      setGrapeInput("");
-    }
-  };
-
-  const handleRemoveGrape = (grapeToRemove: string) => {
-    onUpdate({
-      grapeVariety: formData.grapeVariety.filter(grape => grape !== grapeToRemove)
-    });
-  };
-
-  const handleNumberInput = (field: 'vintage' | 'price' | 'alcoholLevel', value: string) => {
-    const numValue = value === '' ? undefined : Number(value);
-    onUpdate({ [field]: numValue });
-  };
-
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Wine Name *</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => onUpdate({ name: e.target.value })}
-          placeholder="e.g. Château Margaux"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="producer">Producer *</Label>
-        <Input
-          id="producer"
-          value={formData.producer}
-          onChange={(e) => onUpdate({ producer: e.target.value })}
-          placeholder="e.g. Château Margaux"
-        />
-      </div>
-
+      <WineIdentification
+        name={formData.name}
+        producer={formData.producer}
+        onUpdate={onUpdate}
+      />
+      
+      <WineOrigin
+        country={formData.country}
+        region={formData.region}
+        appellation={formData.appellation}
+        onUpdate={onUpdate}
+      />
+      
+      <WineDetails
+        vintage={formData.vintage}
+        price={formData.price}
+        type={formData.type}
+        alcoholLevel={formData.alcoholLevel}
+        onUpdate={onUpdate}
+      />
+      
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="country">Country *</Label>
-          <Input
-            id="country"
-            value={formData.country}
-            onChange={(e) => onUpdate({ country: e.target.value })}
-            placeholder="e.g. France"
+          <GrapeVarieties
+            grapeVariety={formData.grapeVariety}
+            onUpdate={onUpdate}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="region">Region *</Label>
-          <Input
-            id="region"
-            value={formData.region}
-            onChange={(e) => onUpdate({ region: e.target.value })}
-            placeholder="e.g. Bordeaux"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="appellation">Appellation</Label>
-        <Input
-          id="appellation"
-          value={formData.appellation}
-          onChange={(e) => onUpdate({ appellation: e.target.value })}
-          placeholder="e.g. Margaux AOC"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="vintage">Vintage</Label>
-          <Input
-            id="vintage"
-            type="number"
-            value={formData.vintage ?? ''}
-            onChange={(e) => handleNumberInput('vintage', e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="price">Price</Label>
-          <Input
-            id="price"
-            type="number"
-            step="0.01"
-            value={formData.price ?? ''}
-            onChange={(e) => handleNumberInput('price', e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Wine Type</Label>
-        <Select
-          value={formData.type}
-          onValueChange={(value: WineFormData["type"]) => onUpdate({ type: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select wine type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="red">Red</SelectItem>
-            <SelectItem value="rosé">Rosé</SelectItem>
-            <SelectItem value="white">White</SelectItem>
-            <SelectItem value="sparkling">Sparkling</SelectItem>
-            <SelectItem value="sweet">Sweet</SelectItem>
-            <SelectItem value="fortified">Fortified</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="alcoholLevel">Alcohol %</Label>
-          <Input
-            id="alcoholLevel"
-            type="number"
-            step="0.1"
-            value={formData.alcoholLevel ?? ''}
-            onChange={(e) => handleNumberInput('alcoholLevel', e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="grapeVariety">Grape Varieties *</Label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {formData.grapeVariety.map((grape) => (
-              <Badge 
-                key={grape}
-                variant="secondary"
-                className="flex items-center gap-1"
-              >
-                {grape}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveGrape(grape)}
-                  className="hover:bg-secondary rounded-full"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <Select
-              value={grapeInput}
-              onValueChange={(value) => {
-                handleAddGrape(value);
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select or type a grape variety" />
-              </SelectTrigger>
-              <SelectContent>
-                {existingGrapes
-                  .filter(grape => !formData.grapeVariety.includes(grape))
-                  .map((grape) => (
-                    <SelectItem key={grape} value={grape}>
-                      {grape}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Or type a new variety"
-              value={grapeInput}
-              onChange={(e) => setGrapeInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAddGrape(grapeInput);
-                }
-              }}
-            />
-          </div>
         </div>
       </div>
     </div>
