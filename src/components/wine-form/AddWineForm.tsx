@@ -64,36 +64,73 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.producer || !formData.region || !formData.grapeVariety.length) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Ensure all required fields are filled before submitting
+    
+    // Check required fields
     const requiredFields = {
-      appearance: ['clarity', 'intensity'],
-      nose: ['condition', 'intensity', 'development'],
-      palate: ['sweetness', 'acidity', 'tannin', 'alcohol', 'body', 'flavourIntensity', 'finish']
+      basic: {
+        name: "Name",
+        producer: "Producer",
+        region: "Region",
+        country: "Country",
+        vintage: "Vintage",
+      },
+      grapeVariety: "Grape variety",
+      appearance: {
+        clarity: "Clarity",
+        intensity: "Intensity"
+      },
+      nose: {
+        condition: "Nose condition",
+        intensity: "Nose intensity",
+        development: "Development"
+      },
+      palate: {
+        sweetness: "Sweetness",
+        acidity: "Acidity",
+        tannin: "Tannin",
+        alcohol: "Alcohol",
+        body: "Body",
+        flavourIntensity: "Flavour intensity",
+        finish: "Finish"
+      }
     };
 
-    const missingFields = [];
-    
-    for (const [section, fields] of Object.entries(requiredFields)) {
-      for (const field of fields) {
-        if (!formData[section][field]) {
-          missingFields.push(field);
-        }
-      }
+    // Check basic fields
+    const missingBasicFields = Object.entries(requiredFields.basic)
+      .filter(([key]) => !formData[key as keyof typeof formData])
+      .map(([_, label]) => label);
+
+    // Check grape variety
+    if (formData.grapeVariety.length === 0) {
+      missingBasicFields.push(requiredFields.grapeVariety);
     }
 
-    if (missingFields.length > 0) {
+    // Check appearance fields
+    const missingAppearanceFields = Object.entries(requiredFields.appearance)
+      .filter(([key]) => !formData.appearance[key as keyof typeof formData.appearance])
+      .map(([_, label]) => label);
+
+    // Check nose fields
+    const missingNoseFields = Object.entries(requiredFields.nose)
+      .filter(([key]) => !formData.nose[key as keyof typeof formData.nose])
+      .map(([_, label]) => label);
+
+    // Check palate fields
+    const missingPalateFields = Object.entries(requiredFields.palate)
+      .filter(([key]) => !formData.palate[key as keyof typeof formData.palate])
+      .map(([_, label]) => label);
+
+    const allMissingFields = [
+      ...missingBasicFields,
+      ...missingAppearanceFields,
+      ...missingNoseFields,
+      ...missingPalateFields
+    ];
+
+    if (allMissingFields.length > 0) {
       toast({
-        title: "Missing Information",
-        description: "Please complete all tasting note fields before submitting.",
+        title: "Missing Required Fields",
+        description: `Please fill in the following fields: ${allMissingFields.join(", ")}`,
         variant: "destructive",
       });
       return;
