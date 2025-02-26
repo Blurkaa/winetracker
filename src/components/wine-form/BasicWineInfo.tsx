@@ -47,6 +47,11 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
     });
   };
 
+  const handleNumberInput = (field: 'vintage' | 'price' | 'alcoholLevel', value: string) => {
+    const numValue = value === '' ? undefined : Number(value);
+    onUpdate({ [field]: numValue });
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -107,8 +112,8 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
           <Input
             id="vintage"
             type="number"
-            value={formData.vintage}
-            onChange={(e) => onUpdate({ vintage: Number(e.target.value) })}
+            value={formData.vintage ?? ''}
+            onChange={(e) => handleNumberInput('vintage', e.target.value)}
           />
         </div>
 
@@ -118,8 +123,8 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
             id="price"
             type="number"
             step="0.01"
-            value={formData.price}
-            onChange={(e) => onUpdate({ price: Number(e.target.value) })}
+            value={formData.price ?? ''}
+            onChange={(e) => handleNumberInput('price', e.target.value)}
           />
         </div>
       </div>
@@ -151,8 +156,8 @@ export const BasicWineInfo = ({ formData, onUpdate }: BasicWineInfoProps) => {
             id="alcoholLevel"
             type="number"
             step="0.1"
-            value={formData.alcoholLevel}
-            onChange={(e) => onUpdate({ alcoholLevel: Number(e.target.value) })}
+            value={formData.alcoholLevel ?? ''}
+            onChange={(e) => handleNumberInput('alcoholLevel', e.target.value)}
           />
         </div>
 

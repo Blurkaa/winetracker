@@ -6,10 +6,10 @@ export interface WineFormData {
   region: string;
   country: string;
   appellation: string;
-  vintage: number;
-  price: number;
+  vintage?: number;
+  price?: number;
   type: "red" | "rosé" | "white" | "sparkling" | "sweet" | "fortified";
-  alcoholLevel: number;
+  alcoholLevel?: number;
   grapeVariety: string[];
   rating: number;
   appearance: {
