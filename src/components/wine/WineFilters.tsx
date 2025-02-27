@@ -76,9 +76,8 @@ export const WineFilters = ({ filters, setFilters, onReset }: WineFiltersProps) 
                     <Select
                       value={filters.minRating}
                       onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
-                      className="flex-1"
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="flex-1">
                         <SelectValue placeholder="Select rating" />
                       </SelectTrigger>
                       <SelectContent>
@@ -204,9 +203,8 @@ export const WineFilters = ({ filters, setFilters, onReset }: WineFiltersProps) 
               <Select
                 value={filters.minRating}
                 onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
-                className="flex-1"
               >
-                <SelectTrigger>
+                <SelectTrigger className="flex-1">
                   <SelectValue placeholder="Select rating" />
                 </SelectTrigger>
                 <SelectContent>
