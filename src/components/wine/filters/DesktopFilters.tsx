@@ -1,9 +1,10 @@
 
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
 import { TextFilter } from "./TextFilter";
 import { RatingFilter } from "./RatingFilter";
 import { WineTypeFilter } from "./WineTypeFilter";
 import { SortFilter } from "./SortFilter";
-import { FilterHeader } from "./FilterHeader";
 import type { WineFilterOptions } from "@/types/wine";
 
 interface DesktopFiltersProps {
@@ -14,7 +15,17 @@ interface DesktopFiltersProps {
 
 export const DesktopFilters = ({ filters, setFilters, onReset }: DesktopFiltersProps) => (
   <>
-    <FilterHeader onReset={onReset} />
+    <div className="flex justify-between items-center mb-4">
+      <h2 className="font-playfair text-xl font-semibold">Filter Wines</h2>
+      <Button
+        variant="outline"
+        onClick={onReset}
+        className="text-wine hover:text-wine-light"
+      >
+        <RotateCcw className="mr-2 h-4 w-4" />
+        Reset Filters
+      </Button>
+    </div>
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
       <TextFilter
         label="Country"
