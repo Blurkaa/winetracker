@@ -36,28 +36,35 @@ export const useWines = (filters: WineFilterOptions, searchQuery: string) => {
       }
       if (filters.minRating !== "all") {
         query = query.gte("rating", parseInt(filters.minRating));
+        
+        // Apply rating sort if a min rating is selected
+        if (filters.ratingSort) {
+          query = query.order("rating", { ascending: filters.ratingSort === "asc" });
+        }
       }
       if (filters.type !== "all") {
         query = query.eq("type", filters.type);
       }
 
-      // Apply sorting
-      switch (filters.sort) {
-        case "vintage_asc":
-          query = query.order("vintage", { ascending: true });
-          break;
-        case "vintage_desc":
-          query = query.order("vintage", { ascending: false });
-          break;
-        case "price_asc":
-          query = query.order("price", { ascending: true });
-          break;
-        case "price_desc":
-          query = query.order("price", { ascending: false });
-          break;
-        case "recent":
-        default:
-          query = query.order("created_at", { ascending: false });
+      // Apply main sorting if rating sort isn't being used
+      if (filters.minRating === "all" || !filters.ratingSort) {
+        switch (filters.sort) {
+          case "vintage_asc":
+            query = query.order("vintage", { ascending: true });
+            break;
+          case "vintage_desc":
+            query = query.order("vintage", { ascending: false });
+            break;
+          case "price_asc":
+            query = query.order("price", { ascending: true });
+            break;
+          case "price_desc":
+            query = query.order("price", { ascending: false });
+            break;
+          case "recent":
+          default:
+            query = query.order("created_at", { ascending: false });
+        }
       }
 
       const { data, error } = await query;

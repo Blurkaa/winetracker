@@ -20,7 +20,8 @@ const Index = () => {
     grapeVariety: "",
     minRating: "all",
     type: "all",
-    sort: "recent"
+    sort: "recent",
+    ratingSort: "desc"
   };
   const [filters, setFilters] = useState<WineFilterOptions>(initialFilters);
 

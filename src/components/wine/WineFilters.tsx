@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ChevronUp, ChevronDown } from "lucide-react";
+import { RotateCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import type { WineFilterOptions } from "@/types/wine";
@@ -72,22 +72,50 @@ export const WineFilters = ({ filters, setFilters, onReset }: WineFiltersProps) 
                 </div>
                 <div className="space-y-2">
                   <Label>Minimum Rating</Label>
-                  <Select
-                    value={filters.minRating}
-                    onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select rating" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Any rating</SelectItem>
-                      {[1, 2, 3, 4, 5].map((rating) => (
-                        <SelectItem key={rating} value={rating.toString()}>
-                          {rating} star{rating !== 1 ? "s" : ""} or higher
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex space-x-2">
+                    <Select
+                      value={filters.minRating}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
+                      className="flex-1"
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select rating" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Any rating</SelectItem>
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <SelectItem key={rating} value={rating.toString()}>
+                            {rating} star{rating !== 1 ? "s" : ""} or higher
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    
+                    {filters.minRating !== "all" && (
+                      <Select 
+                        value={filters.ratingSort || "desc"}
+                        onValueChange={(value) => setFilters(prev => ({ ...prev, ratingSort: value as "asc" | "desc" }))}
+                      >
+                        <SelectTrigger className="w-[130px]">
+                          <SelectValue placeholder="Sort order" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="asc">
+                            <div className="flex items-center">
+                              <ArrowUp className="h-4 w-4 mr-2" />
+                              <span>Ascending</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="desc">
+                            <div className="flex items-center">
+                              <ArrowDown className="h-4 w-4 mr-2" />
+                              <span>Descending</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Wine Type</Label>
@@ -172,22 +200,50 @@ export const WineFilters = ({ filters, setFilters, onReset }: WineFiltersProps) 
           </div>
           <div className="space-y-2">
             <Label>Minimum Rating</Label>
-            <Select
-              value={filters.minRating}
-              onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select rating" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any rating</SelectItem>
-                {[1, 2, 3, 4, 5].map((rating) => (
-                  <SelectItem key={rating} value={rating.toString()}>
-                    {rating} star{rating !== 1 ? "s" : ""} or higher
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex space-x-2">
+              <Select
+                value={filters.minRating}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, minRating: value }))}
+                className="flex-1"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any rating</SelectItem>
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <SelectItem key={rating} value={rating.toString()}>
+                      {rating} star{rating !== 1 ? "s" : ""} or higher
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              {filters.minRating !== "all" && (
+                <Select 
+                  value={filters.ratingSort || "desc"}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, ratingSort: value as "asc" | "desc" }))}
+                >
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="Sort order" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">
+                      <div className="flex items-center">
+                        <ArrowUp className="h-4 w-4 mr-2" />
+                        <span>Ascending</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="desc">
+                      <div className="flex items-center">
+                        <ArrowDown className="h-4 w-4 mr-2" />
+                        <span>Descending</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </div>
           <div className="space-y-2">
             <Label>Wine Type</Label>

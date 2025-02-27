@@ -1,3 +1,4 @@
+
 export interface WineFilterOptions {
   country: string;
   region: string;
@@ -5,4 +6,5 @@ export interface WineFilterOptions {
   minRating: string;
   type: string;
   sort: string;
+  ratingSort?: "asc" | "desc";
 }
