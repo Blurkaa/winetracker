@@ -1,12 +1,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, RotateCcw } from "lucide-react";
 import { TextFilter } from "./TextFilter";
 import { RatingFilter } from "./RatingFilter";
 import { WineTypeFilter } from "./WineTypeFilter";
 import { SortFilter } from "./SortFilter";
-import { FilterHeader } from "./FilterHeader";
 import type { WineFilterOptions } from "@/types/wine";
 
 interface MobileFiltersProps {
@@ -21,21 +20,28 @@ export const MobileFilters = ({ filters, setFilters, onReset, isOpen, setIsOpen 
   <Collapsible open={isOpen} onOpenChange={setIsOpen}>
     <div className="flex justify-between items-center mb-4">
       <h2 className="font-playfair text-xl font-semibold">Filter Wines</h2>
-      <CollapsibleTrigger asChild>
-        <Button variant="ghost" size="icon">
-          {isOpen ? (
-            <ChevronUp className="h-4 w-4" />
-          ) : (
-            <ChevronDown className="h-4 w-4" />
-          )}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={onReset}
+          className="text-wine hover:text-wine-light"
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Reset Filters
         </Button>
-      </CollapsibleTrigger>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="icon">
+            {isOpen ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </Button>
+        </CollapsibleTrigger>
+      </div>
     </div>
     <CollapsibleContent>
       <div className="space-y-4">
-        <div className="flex justify-end">
-          <FilterHeader onReset={onReset} />
-        </div>
         <div className="space-y-4">
           <TextFilter
             label="Country"
