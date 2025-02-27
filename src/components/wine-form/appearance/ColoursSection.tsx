@@ -1,3 +1,4 @@
+
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { WineFormData } from "../types";
@@ -18,7 +19,8 @@ export const ColoursSection = ({ wineType, colours, onColourChange }: ColoursSec
   const getColourOptions = () => {
     switch (wineType) {
       case 'white':
-        return { title: 'White Wine Colours', options: wineColourOptions.white };
+      case 'sparkling':
+        return { title: `${wineType === 'white' ? 'White' : 'Sparkling'} Wine Colours`, options: wineColourOptions.white };
       case 'rosé':
         return { title: 'Rosé Wine Colours', options: wineColourOptions.rosé };
       case 'red':
