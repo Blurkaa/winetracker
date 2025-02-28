@@ -34,6 +34,13 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
       : regions;
   }, [regions, searchTerm]);
 
+  const handleSelect = React.useCallback((region: string) => {
+    console.log("Selected region:", region);
+    onChange(region === value ? "" : region);
+    setOpen(false);
+    setSearchTerm("");
+  }, [onChange, value]);
+
   // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {
     if (country && value && !getRegionsByCountry(country).includes(value)) {
@@ -55,7 +62,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-[200px]">
+      <PopoverContent className="p-0 w-full min-w-[200px] z-50">
         <div className="p-2">
           <Input
             placeholder="Search regions..."
@@ -70,17 +77,14 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                   <div className="py-6 text-center text-sm">No region found</div>
                 ) : (
                   filteredRegions.map((region) => (
-                    <div
+                    <button
+                      type="button"
                       key={region}
                       className={cn(
-                        "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
+                        "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
                         value === region && "bg-accent text-accent-foreground"
                       )}
-                      onClick={() => {
-                        onChange(region === value ? "" : region);
-                        setOpen(false);
-                        setSearchTerm("");
-                      }}
+                      onClick={() => handleSelect(region)}
                     >
                       <Check
                         className={cn(
@@ -89,7 +93,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                         )}
                       />
                       {region}
-                    </div>
+                    </button>
                   ))
                 )
               ) : (

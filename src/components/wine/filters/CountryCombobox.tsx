@@ -30,6 +30,13 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
       : countries;
   }, [countries, searchTerm]);
 
+  const handleSelect = React.useCallback((country: string) => {
+    console.log("Selected country:", country);
+    onChange(country === value ? "" : country);
+    setOpen(false);
+    setSearchTerm("");
+  }, [onChange, value]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -43,7 +50,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-[200px]">
+      <PopoverContent className="p-0 w-full min-w-[200px] z-50">
         <div className="p-2">
           <Input
             placeholder="Search countries..."
@@ -57,17 +64,14 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                 <div className="py-6 text-center text-sm">No country found</div>
               ) : (
                 filteredCountries.map((country) => (
-                  <div
+                  <button
+                    type="button"
                     key={country}
                     className={cn(
-                      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
+                      "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
                       value === country && "bg-accent text-accent-foreground"
                     )}
-                    onClick={() => {
-                      onChange(country === value ? "" : country);
-                      setOpen(false);
-                      setSearchTerm("");
-                    }}
+                    onClick={() => handleSelect(country)}
                   >
                     <Check
                       className={cn(
@@ -76,7 +80,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                       )}
                     />
                     {country}
-                  </div>
+                  </button>
                 ))
               )}
             </div>
