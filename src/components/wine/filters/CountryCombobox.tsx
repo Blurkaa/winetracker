@@ -4,18 +4,13 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getAllCountries } from "@/data/wineRegions";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CountryComboboxProps {
   value: string;
@@ -25,7 +20,15 @@ interface CountryComboboxProps {
 
 export function CountryCombobox({ value, onChange, placeholder }: CountryComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const countries = React.useMemo(() => getAllCountries() || [], []);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const countries = React.useMemo(() => getAllCountries(), []);
+  
+  const filteredCountries = React.useMemo(() => {
+    return searchTerm 
+      ? countries.filter(country => 
+          country.toLowerCase().includes(searchTerm.toLowerCase()))
+      : countries;
+  }, [countries, searchTerm]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,30 +44,44 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 w-full min-w-[200px]">
-        <Command>
-          <CommandInput placeholder="Search countries..." />
-          <CommandEmpty>No country found.</CommandEmpty>
-          <CommandGroup className="max-h-60 overflow-y-auto">
-            {countries.map((country) => (
-              <CommandItem
-                key={country}
-                value={country}
-                onSelect={(currentValue) => {
-                  onChange(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === country ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {country}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
+        <div className="p-2">
+          <Input
+            placeholder="Search countries..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-2"
+          />
+          <ScrollArea className="h-[200px]">
+            <div className="p-1">
+              {filteredCountries.length === 0 ? (
+                <div className="py-6 text-center text-sm">No country found</div>
+              ) : (
+                filteredCountries.map((country) => (
+                  <div
+                    key={country}
+                    className={cn(
+                      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
+                      value === country && "bg-accent text-accent-foreground"
+                    )}
+                    onClick={() => {
+                      onChange(country === value ? "" : country);
+                      setOpen(false);
+                      setSearchTerm("");
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === country ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {country}
+                  </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </PopoverContent>
     </Popover>
   );
