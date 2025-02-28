@@ -26,7 +26,9 @@ interface RegionComboboxProps {
 
 export function RegionCombobox({ value, onChange, placeholder, country }: RegionComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const regions = country ? getRegionsByCountry(country) : getAllRegions();
+  const regions = React.useMemo(() => {
+    return country ? getRegionsByCountry(country) : getAllRegions() || [];
+  }, [country]);
 
   // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {

@@ -25,7 +25,7 @@ interface CountryComboboxProps {
 
 export function CountryCombobox({ value, onChange, placeholder }: CountryComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const countries = getAllCountries();
+  const countries = React.useMemo(() => getAllCountries() || [], []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -42,7 +42,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
       </PopoverTrigger>
       <PopoverContent className="p-0 w-full min-w-[200px]">
         <Command>
-          <CommandInput placeholder={`Search countries...`} />
+          <CommandInput placeholder="Search countries..." />
           <CommandEmpty>No country found.</CommandEmpty>
           <CommandGroup className="max-h-60 overflow-y-auto">
             {countries.map((country) => (
