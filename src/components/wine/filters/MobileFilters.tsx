@@ -48,12 +48,15 @@ export const MobileFilters = ({ filters, setFilters, onReset, isOpen, setIsOpen 
             value={filters.country}
             placeholder="Filter by country"
             onChange={(value) => setFilters(prev => ({ ...prev, country: value }))}
+            type="country"
           />
           <TextFilter
             label="Region"
             value={filters.region}
             placeholder="Filter by region"
             onChange={(value) => setFilters(prev => ({ ...prev, region: value }))}
+            type="region"
+            countryValue={filters.country}
           />
           <TextFilter
             label="Grape Variety"

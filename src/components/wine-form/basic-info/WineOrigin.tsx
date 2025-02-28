@@ -1,7 +1,9 @@
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { WineFormData } from "../types";
+import { CountryCombobox } from "@/components/wine/filters/CountryCombobox";
+import { RegionCombobox } from "@/components/wine/filters/RegionCombobox";
 
 interface WineOriginProps {
   country: string;
@@ -16,21 +18,20 @@ export const WineOrigin = ({ country, region, appellation, onUpdate }: WineOrigi
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="country">Country *</Label>
-          <Input
-            id="country"
+          <CountryCombobox
             value={country}
-            onChange={(e) => onUpdate({ country: e.target.value })}
-            placeholder="e.g. France"
+            onChange={(value) => onUpdate({ country: value })}
+            placeholder="Select country"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="region">Region *</Label>
-          <Input
-            id="region"
+          <RegionCombobox
             value={region}
-            onChange={(e) => onUpdate({ region: e.target.value })}
-            placeholder="e.g. Bordeaux"
+            onChange={(value) => onUpdate({ region: value })}
+            placeholder="Select region"
+            country={country}
           />
         </div>
       </div>
