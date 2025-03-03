@@ -50,6 +50,14 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     setSearchTerm("");
   }, [onChange, value]);
 
+  // Handle Enter key press in search input
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchTerm.trim() !== "") {
+      e.preventDefault();
+      handleSelect(searchTerm);
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -73,6 +81,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             placeholder="Search countries..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="mb-2"
             autoFocus
           />

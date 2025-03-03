@@ -28,10 +28,24 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
   }, [country]);
   
   const filteredRegions = React.useMemo(() => {
-    return searchTerm 
-      ? regions.filter(region => 
-          region.toLowerCase().includes(searchTerm.toLowerCase()))
-      : regions;
+    if (!searchTerm) return regions;
+
+    // Check if search term exactly matches any existing region
+    const exactMatch = regions.find(
+      region => region.toLowerCase() === searchTerm.toLowerCase()
+    );
+    
+    // Get all partial matches
+    const partialMatches = regions.filter(
+      region => region.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // If there's no exact match and the search term isn't empty, add it as a custom option
+    if (!exactMatch && searchTerm.trim() !== "") {
+      return [searchTerm, ...partialMatches];
+    }
+    
+    return partialMatches;
   }, [regions, searchTerm]);
 
   const handleSelect = React.useCallback((region: string) => {
@@ -39,6 +53,14 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     setOpen(false);
     setSearchTerm("");
   }, [onChange, value]);
+
+  // Handle Enter key press in search input
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchTerm.trim() !== "") {
+      e.preventDefault();
+      handleSelect(searchTerm);
+    }
+  };
 
   // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {
@@ -71,7 +93,9 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             placeholder="Search regions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="mb-2"
+            autoFocus
           />
           <ScrollArea className="h-[200px]">
             <div className="p-1">
@@ -79,15 +103,16 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                 filteredRegions.length === 0 ? (
                   <div className="py-6 text-center text-sm">No region found</div>
                 ) : (
-                  filteredRegions.map((region) => (
+                  filteredRegions.map((region, index) => (
                     <Button
-                      key={region}
+                      key={`${region}-${index}`}
                       variant="ghost"
                       className={cn(
                         "relative flex w-full justify-start font-normal",
                         value === region ? "bg-accent text-accent-foreground" : ""
                       )}
                       onClick={() => handleSelect(region)}
+                      type="button"
                     >
                       <Check
                         className={cn(
