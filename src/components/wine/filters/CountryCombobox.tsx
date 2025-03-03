@@ -24,10 +24,24 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   const countries = React.useMemo(() => getAllCountries(), []);
   
   const filteredCountries = React.useMemo(() => {
-    return searchTerm 
-      ? countries.filter(country => 
-          country.toLowerCase().includes(searchTerm.toLowerCase()))
-      : countries;
+    if (!searchTerm) return countries;
+    
+    // Check if search term exactly matches any existing country
+    const exactMatch = countries.find(
+      country => country.toLowerCase() === searchTerm.toLowerCase()
+    );
+    
+    // Get all partial matches
+    const partialMatches = countries.filter(
+      country => country.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // If there's no exact match and the search term isn't empty, add it as a custom option
+    if (!exactMatch && searchTerm.trim() !== "") {
+      return [searchTerm, ...partialMatches];
+    }
+    
+    return partialMatches;
   }, [countries, searchTerm]);
 
   const handleSelect = React.useCallback((country: string) => {
@@ -67,9 +81,9 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
               ) : (
-                filteredCountries.map((country) => (
+                filteredCountries.map((country, index) => (
                   <Button
-                    key={country}
+                    key={`${country}-${index}`}
                     variant="ghost"
                     className={cn(
                       "relative flex w-full justify-start font-normal",
