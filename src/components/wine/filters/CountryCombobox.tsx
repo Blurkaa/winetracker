@@ -60,6 +60,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2"
+            autoFocus
           />
           <ScrollArea className="h-[200px]">
             <div className="p-1">
@@ -75,6 +76,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                       value === country ? "bg-accent text-accent-foreground" : ""
                     )}
                     onClick={() => handleSelect(country)}
+                    type="button"
                   >
                     <Check
                       className={cn(
