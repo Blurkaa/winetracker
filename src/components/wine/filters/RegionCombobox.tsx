@@ -62,7 +62,11 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-[200px] z-50">
+      <PopoverContent 
+        className="p-0 w-full min-w-[200px] z-50 bg-popover" 
+        align="start"
+        sideOffset={5}
+      >
         <div className="p-2">
           <Input
             placeholder="Search regions..."
@@ -70,21 +74,22 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2"
           />
-          <ScrollArea className="h-[200px]">
+          <ScrollArea className="h-[200px] overflow-y-auto">
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
                   <div className="py-6 text-center text-sm">No region found</div>
                 ) : (
                   filteredRegions.map((region) => (
-                    <button
-                      type="button"
+                    <Button
                       key={region}
+                      variant="ghost"
                       className={cn(
-                        "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                        value === region && "bg-accent text-accent-foreground"
+                        "relative flex w-full justify-start cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm text-left",
+                        value === region ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"
                       )}
                       onClick={() => handleSelect(region)}
+                      type="button"
                     >
                       <Check
                         className={cn(
@@ -93,7 +98,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                         )}
                       />
                       {region}
-                    </button>
+                    </Button>
                   ))
                 )
               ) : (

@@ -50,7 +50,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 w-full min-w-[200px] z-50">
+      <PopoverContent 
+        className="p-0 w-full min-w-[200px] z-50 bg-popover" 
+        align="start"
+        sideOffset={5}
+      >
         <div className="p-2">
           <Input
             placeholder="Search countries..."
@@ -58,20 +62,21 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2"
           />
-          <ScrollArea className="h-[200px]">
+          <ScrollArea className="h-[200px] overflow-y-auto">
             <div className="p-1">
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
               ) : (
                 filteredCountries.map((country) => (
-                  <button
-                    type="button"
+                  <Button
                     key={country}
+                    variant="ghost"
                     className={cn(
-                      "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-                      value === country && "bg-accent text-accent-foreground"
+                      "relative flex w-full justify-start cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm text-left",
+                      value === country ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"
                     )}
                     onClick={() => handleSelect(country)}
+                    type="button"
                   >
                     <Check
                       className={cn(
@@ -80,7 +85,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                       )}
                     />
                     {country}
-                  </button>
+                  </Button>
                 ))
               )}
             </div>
