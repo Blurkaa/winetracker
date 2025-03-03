@@ -35,7 +35,6 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
   }, [regions, searchTerm]);
 
   const handleSelect = React.useCallback((region: string) => {
-    console.log("Selected region:", region);
     onChange(region === value ? "" : region);
     setOpen(false);
     setSearchTerm("");
@@ -63,7 +62,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-full min-w-[200px] z-50" 
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
       >
@@ -74,18 +73,19 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2"
           />
-          <ScrollArea className="h-[200px] overflow-y-auto">
+          <ScrollArea className="h-[200px]">
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
                   <div className="py-6 text-center text-sm">No region found</div>
                 ) : (
                   filteredRegions.map((region) => (
-                    <div
+                    <Button
                       key={region}
+                      variant="ghost"
                       className={cn(
-                        "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground",
-                        value === region && "bg-accent text-accent-foreground"
+                        "relative flex w-full justify-start font-normal",
+                        value === region ? "bg-accent text-accent-foreground" : ""
                       )}
                       onClick={() => handleSelect(region)}
                     >
@@ -96,7 +96,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                         )}
                       />
                       {region}
-                    </div>
+                    </Button>
                   ))
                 )
               ) : (

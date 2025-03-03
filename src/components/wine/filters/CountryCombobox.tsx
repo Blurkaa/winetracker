@@ -31,7 +31,6 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   }, [countries, searchTerm]);
 
   const handleSelect = React.useCallback((country: string) => {
-    console.log("Selected country:", country);
     onChange(country === value ? "" : country);
     setOpen(false);
     setSearchTerm("");
@@ -51,7 +50,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-full min-w-[200px] z-50" 
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
       >
@@ -62,17 +61,18 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             onChange={(e) => setSearchTerm(e.target.value)}
             className="mb-2"
           />
-          <ScrollArea className="h-[200px] overflow-y-auto">
+          <ScrollArea className="h-[200px]">
             <div className="p-1">
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
               ) : (
                 filteredCountries.map((country) => (
-                  <div
+                  <Button
                     key={country}
+                    variant="ghost"
                     className={cn(
-                      "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground",
-                      value === country && "bg-accent text-accent-foreground"
+                      "relative flex w-full justify-start font-normal",
+                      value === country ? "bg-accent text-accent-foreground" : ""
                     )}
                     onClick={() => handleSelect(country)}
                   >
@@ -83,7 +83,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                       )}
                     />
                     {country}
-                  </div>
+                  </Button>
                 ))
               )}
             </div>
