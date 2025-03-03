@@ -51,11 +51,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-full min-w-[200px] z-50 bg-popover" 
+        className="p-0 w-full min-w-[200px] z-50" 
         align="start"
         sideOffset={5}
       >
-        <div className="p-2">
+        <div className="p-2 bg-popover">
           <Input
             placeholder="Search countries..."
             value={searchTerm}
@@ -68,15 +68,13 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                 <div className="py-6 text-center text-sm">No country found</div>
               ) : (
                 filteredCountries.map((country) => (
-                  <Button
+                  <div
                     key={country}
-                    variant="ghost"
                     className={cn(
-                      "relative flex w-full justify-start cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm text-left",
-                      value === country ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"
+                      "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground",
+                      value === country && "bg-accent text-accent-foreground"
                     )}
                     onClick={() => handleSelect(country)}
-                    type="button"
                   >
                     <Check
                       className={cn(
@@ -85,7 +83,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                       )}
                     />
                     {country}
-                  </Button>
+                  </div>
                 ))
               )}
             </div>
