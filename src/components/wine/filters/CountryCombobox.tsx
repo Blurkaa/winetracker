@@ -85,7 +85,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[300px] overflow-y-auto">
+          <ScrollArea className="h-[300px]">
             <div className="p-1">
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
