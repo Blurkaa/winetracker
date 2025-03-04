@@ -62,8 +62,8 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   };
 
-  // Prevent scroll events from propagating to parent elements
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  // Prevent wheel events from propagating to parent elements
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 
@@ -102,7 +102,10 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             className="mb-2"
             autoFocus
           />
-          <div className="h-[300px] overflow-auto" onScroll={handleScroll}>
+          <div 
+            className="h-[300px] overflow-auto" 
+            onWheel={handleWheel}
+          >
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
