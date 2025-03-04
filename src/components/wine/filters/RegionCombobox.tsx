@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/popover";
 import { getRegionsByCountry, getAllRegions } from "@/data/wineRegions";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface RegionComboboxProps {
   value: string;
@@ -62,10 +61,45 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   };
 
+  // Create a ref for the scrollable div
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
   // Prevent wheel events from propagating to parent elements
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+  const handleWheel = React.useCallback((e: WheelEvent) => {
     e.stopPropagation();
-  };
+    
+    // Access the scrollable div via ref
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    // Get current scroll position and limits
+    const scrollTop = container.scrollTop;
+    const scrollHeight = container.scrollHeight;
+    const clientHeight = container.clientHeight;
+    
+    // Determine if we're at the top or bottom boundary
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+    
+    // If we're at the top and trying to scroll up, or at the bottom and trying to scroll down, 
+    // prevent default to stop the page from scrolling
+    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+      // Don't prevent default here - we only want to stop propagation
+    } else {
+      e.preventDefault();
+    }
+  }, []);
+
+  // Add and remove wheel event listener on open/close
+  React.useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (open && container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+      return () => {
+        container.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, [open, handleWheel]);
 
   // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {
@@ -103,8 +137,8 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             autoFocus
           />
           <div 
-            className="h-[300px] overflow-auto" 
-            onWheel={handleWheel}
+            ref={scrollContainerRef}
+            className="h-[300px] overflow-auto"
           >
             <div className="p-1">
               {country ? (
