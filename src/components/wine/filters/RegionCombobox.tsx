@@ -97,7 +97,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[200px]">
+          <ScrollArea className="h-[300px] overflow-y-auto">
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
