@@ -58,6 +58,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     }
   };
 
+  // Prevent scroll events from propagating to parent elements
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -85,7 +90,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[300px]">
+          <div className="h-[300px] overflow-auto" onScroll={handleScroll}>
             <div className="p-1">
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
@@ -112,7 +117,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                 ))
               )}
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

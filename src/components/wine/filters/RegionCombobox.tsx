@@ -62,6 +62,11 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   };
 
+  // Prevent scroll events from propagating to parent elements
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {
     if (country && value && !getRegionsByCountry(country).includes(value)) {
@@ -97,7 +102,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[300px]">
+          <div className="h-[300px] overflow-auto" onScroll={handleScroll}>
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
@@ -128,7 +133,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                 <div className="py-6 text-center text-sm">Please select a country first</div>
               )}
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
