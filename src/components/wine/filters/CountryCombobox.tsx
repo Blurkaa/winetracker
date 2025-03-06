@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/popover";
 import { getAllCountries } from "@/data/wineRegions";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CountryComboboxProps {
   value: string;
@@ -58,6 +57,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     }
   };
 
+  // Prevent clicks inside the popover from closing it
+  const handlePopoverClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -75,6 +79,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
+        onClick={handlePopoverClick}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -85,34 +90,38 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[200px]">
-            <div className="p-1">
-              {filteredCountries.length === 0 ? (
-                <div className="py-6 text-center text-sm">No country found</div>
-              ) : (
-                filteredCountries.map((country, index) => (
-                  <Button
-                    key={`${country}-${index}`}
-                    variant="ghost"
+          <div 
+            className="max-h-[200px] overflow-y-auto pr-1 overscroll-contain"
+            style={{ 
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#9ca3af transparent'
+            }}
+          >
+            {filteredCountries.length === 0 ? (
+              <div className="py-6 text-center text-sm">No country found</div>
+            ) : (
+              filteredCountries.map((country, index) => (
+                <Button
+                  key={`${country}-${index}`}
+                  variant="ghost"
+                  className={cn(
+                    "relative flex w-full justify-start font-normal",
+                    value === country ? "bg-accent text-accent-foreground" : ""
+                  )}
+                  onClick={() => handleSelect(country)}
+                  type="button"
+                >
+                  <Check
                     className={cn(
-                      "relative flex w-full justify-start font-normal",
-                      value === country ? "bg-accent text-accent-foreground" : ""
+                      "mr-2 h-4 w-4",
+                      value === country ? "opacity-100" : "opacity-0"
                     )}
-                    onClick={() => handleSelect(country)}
-                    type="button"
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === country ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {country}
-                  </Button>
-                ))
-              )}
-            </div>
-          </ScrollArea>
+                  />
+                  {country}
+                </Button>
+              ))
+            )}
+          </div>
         </div>
       </PopoverContent>
     </Popover>
