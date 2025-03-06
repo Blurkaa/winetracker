@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,17 +24,14 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   const filteredCountries = React.useMemo(() => {
     if (!searchTerm) return countries;
     
-    // Check if search term exactly matches any existing country
     const exactMatch = countries.find(
       country => country.toLowerCase() === searchTerm.toLowerCase()
     );
     
-    // Get all partial matches
     const partialMatches = countries.filter(
       country => country.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
-    // If there's no exact match and the search term isn't empty, add it as a custom option
     if (!exactMatch && searchTerm.trim() !== "") {
       return [searchTerm, ...partialMatches];
     }
@@ -49,7 +45,6 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     setSearchTerm("");
   }, [onChange, value]);
 
-  // Handle Enter key press in search input
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim() !== "") {
       e.preventDefault();
@@ -57,42 +52,31 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     }
   };
 
-  // Create a ref for the scrollable div
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
-  // Prevent wheel events from propagating to parent elements
   const handleWheel = React.useCallback((e: WheelEvent) => {
     e.stopPropagation();
     
-    // Access the scrollable div via ref
     const container = scrollContainerRef.current;
     if (!container) return;
     
-    // Get current scroll position and limits
-    const scrollTop = container.scrollTop;
-    const scrollHeight = container.scrollHeight;
-    const clientHeight = container.clientHeight;
-    
-    // Determine if we're at the top or bottom boundary
+    const { scrollTop, scrollHeight, clientHeight } = container;
     const isAtTop = scrollTop === 0;
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
     
-    // If we're at the top and trying to scroll up, or at the bottom and trying to scroll down, 
-    // prevent default to stop the page from scrolling
     if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-      // Don't prevent default here - we only want to stop propagation
-    } else {
       e.preventDefault();
+    } else {
+      container.scrollTop += e.deltaY;
     }
   }, []);
 
-  // Add and remove wheel event listener on open/close
   React.useEffect(() => {
     const container = scrollContainerRef.current;
     if (open && container) {
-      container.addEventListener('wheel', handleWheel, { passive: false });
+      container.addEventListener('wheel', handleWheel, { passive: false, capture: true });
       return () => {
-        container.removeEventListener('wheel', handleWheel);
+        container.removeEventListener('wheel', handleWheel, { capture: true });
       };
     }
   }, [open, handleWheel]);
@@ -127,6 +111,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
           <div 
             ref={scrollContainerRef}
             className="h-[300px] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="p-1">
               {filteredCountries.length === 0 ? (
