@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -56,35 +57,6 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   };
 
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
-
-  const handleWheel = React.useCallback((e: WheelEvent) => {
-    e.stopPropagation();
-    
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = container;
-    const isAtTop = scrollTop === 0;
-    const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
-    
-    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-      e.preventDefault();
-    } else {
-      container.scrollTop += e.deltaY;
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (open && container) {
-      container.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-      return () => {
-        container.removeEventListener('wheel', handleWheel, { capture: true });
-      };
-    }
-  }, [open, handleWheel]);
-
   React.useEffect(() => {
     if (country && value && !getRegionsByCountry(country).includes(value)) {
       onChange("");
@@ -109,6 +81,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -120,9 +93,11 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             autoFocus
           />
           <div 
-            ref={scrollContainerRef}
             className="h-[300px] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
+            style={{ overscrollBehavior: 'contain' }}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
           >
             <div className="p-1">
               {country ? (
