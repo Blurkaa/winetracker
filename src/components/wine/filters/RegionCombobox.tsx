@@ -76,6 +76,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
   // Prevent wheel events from propagating to parent
   const handleWheel = (e: React.WheelEvent) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent the parent from scrolling
   };
 
   return (
@@ -93,11 +94,12 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-50" 
         align="start"
         sideOffset={5}
         onClick={handlePopoverClick}
         onWheel={handleWheel}
+        style={{ overscrollBehavior: 'none' }}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -115,7 +117,10 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
               scrollbarColor: '#9ca3af transparent',
               overscrollBehavior: 'contain'
             }}
-            onWheel={handleWheel}
+            onWheel={(e) => {
+              e.stopPropagation();
+              // Don't prevent default here, to allow scrolling within this div
+            }}
           >
             {country ? (
               filteredRegions.length === 0 ? (
