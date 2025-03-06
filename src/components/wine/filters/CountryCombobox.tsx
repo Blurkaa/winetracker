@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { getAllCountries } from "@/data/wineRegions";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CountryComboboxProps {
   value: string;
@@ -25,14 +26,17 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   const filteredCountries = React.useMemo(() => {
     if (!searchTerm) return countries;
     
+    // Check if search term exactly matches any existing country
     const exactMatch = countries.find(
       country => country.toLowerCase() === searchTerm.toLowerCase()
     );
     
+    // Get all partial matches
     const partialMatches = countries.filter(
       country => country.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
+    // If there's no exact match and the search term isn't empty, add it as a custom option
     if (!exactMatch && searchTerm.trim() !== "") {
       return [searchTerm, ...partialMatches];
     }
@@ -46,6 +50,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     setSearchTerm("");
   }, [onChange, value]);
 
+  // Handle Enter key press in search input
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim() !== "") {
       e.preventDefault();
@@ -70,7 +75,6 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
-        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -81,13 +85,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             className="mb-2"
             autoFocus
           />
-          <div 
-            className="h-[300px] overflow-auto"
-            style={{ overscrollBehavior: 'contain' }}
-            onWheel={(e) => {
-              e.stopPropagation();
-            }}
-          >
+          <ScrollArea className="h-[200px]">
             <div className="p-1">
               {filteredCountries.length === 0 ? (
                 <div className="py-6 text-center text-sm">No country found</div>
@@ -114,7 +112,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
                 ))
               )}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </PopoverContent>
     </Popover>

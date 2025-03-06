@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { getRegionsByCountry, getAllRegions } from "@/data/wineRegions";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface RegionComboboxProps {
   value: string;
@@ -29,14 +30,17 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
   const filteredRegions = React.useMemo(() => {
     if (!searchTerm) return regions;
 
+    // Check if search term exactly matches any existing region
     const exactMatch = regions.find(
       region => region.toLowerCase() === searchTerm.toLowerCase()
     );
     
+    // Get all partial matches
     const partialMatches = regions.filter(
       region => region.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
+    // If there's no exact match and the search term isn't empty, add it as a custom option
     if (!exactMatch && searchTerm.trim() !== "") {
       return [searchTerm, ...partialMatches];
     }
@@ -50,6 +54,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     setSearchTerm("");
   }, [onChange, value]);
 
+  // Handle Enter key press in search input
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim() !== "") {
       e.preventDefault();
@@ -57,6 +62,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   };
 
+  // Reset region value when country changes if the current region is not in the new country's list
   React.useEffect(() => {
     if (country && value && !getRegionsByCountry(country).includes(value)) {
       onChange("");
@@ -81,7 +87,6 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
-        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -92,13 +97,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             className="mb-2"
             autoFocus
           />
-          <div 
-            className="h-[300px] overflow-auto"
-            style={{ overscrollBehavior: 'contain' }}
-            onWheel={(e) => {
-              e.stopPropagation();
-            }}
-          >
+          <ScrollArea className="h-[200px]">
             <div className="p-1">
               {country ? (
                 filteredRegions.length === 0 ? (
@@ -129,7 +128,7 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
                 <div className="py-6 text-center text-sm">Please select a country first</div>
               )}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </PopoverContent>
     </Popover>
