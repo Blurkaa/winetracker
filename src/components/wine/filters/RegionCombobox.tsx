@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/popover";
 import { getRegionsByCountry, getAllRegions } from "@/data/wineRegions";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface RegionComboboxProps {
   value: string;
@@ -69,6 +68,16 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     }
   }, [country, value, onChange]);
 
+  // Prevent clicks inside the popover from closing it
+  const handlePopoverClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  // Prevent wheel events from propagating to parent
+  const handleWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -87,6 +96,8 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px]" 
         align="start"
         sideOffset={5}
+        onClick={handlePopoverClick}
+        onWheel={handleWheel}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -97,38 +108,44 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             className="mb-2"
             autoFocus
           />
-          <ScrollArea className="h-[200px]">
-            <div className="p-1">
-              {country ? (
-                filteredRegions.length === 0 ? (
-                  <div className="py-6 text-center text-sm">No region found</div>
-                ) : (
-                  filteredRegions.map((region, index) => (
-                    <Button
-                      key={`${region}-${index}`}
-                      variant="ghost"
-                      className={cn(
-                        "relative flex w-full justify-start font-normal",
-                        value === region ? "bg-accent text-accent-foreground" : ""
-                      )}
-                      onClick={() => handleSelect(region)}
-                      type="button"
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value === region ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {region}
-                    </Button>
-                  ))
-                )
+          <div 
+            className="max-h-[200px] overflow-y-auto pr-1"
+            style={{ 
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#9ca3af transparent',
+              overscrollBehavior: 'contain'
+            }}
+            onWheel={handleWheel}
+          >
+            {country ? (
+              filteredRegions.length === 0 ? (
+                <div className="py-6 text-center text-sm">No region found</div>
               ) : (
-                <div className="py-6 text-center text-sm">Please select a country first</div>
-              )}
-            </div>
-          </ScrollArea>
+                filteredRegions.map((region, index) => (
+                  <Button
+                    key={`${region}-${index}`}
+                    variant="ghost"
+                    className={cn(
+                      "relative flex w-full justify-start font-normal",
+                      value === region ? "bg-accent text-accent-foreground" : ""
+                    )}
+                    onClick={() => handleSelect(region)}
+                    type="button"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === region ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {region}
+                  </Button>
+                ))
+              )
+            ) : (
+              <div className="py-6 text-center text-sm">Please select a country first</div>
+            )}
+          </div>
         </div>
       </PopoverContent>
     </Popover>

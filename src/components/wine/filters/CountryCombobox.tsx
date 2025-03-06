@@ -62,6 +62,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     e.stopPropagation();
   };
 
+  // Prevent wheel events from propagating to parent
+  const handleWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -80,6 +85,7 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         align="start"
         sideOffset={5}
         onClick={handlePopoverClick}
+        onWheel={handleWheel}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -91,11 +97,13 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
             autoFocus
           />
           <div 
-            className="max-h-[200px] overflow-y-auto pr-1 overscroll-contain"
+            className="max-h-[200px] overflow-y-auto pr-1"
             style={{ 
               scrollbarWidth: 'thin',
-              scrollbarColor: '#9ca3af transparent'
+              scrollbarColor: '#9ca3af transparent',
+              overscrollBehavior: 'contain'
             }}
+            onWheel={handleWheel}
           >
             {filteredCountries.length === 0 ? (
               <div className="py-6 text-center text-sm">No country found</div>
