@@ -21,6 +21,7 @@ interface RegionComboboxProps {
 export function RegionCombobox({ value, onChange, placeholder, country }: RegionComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const scrollableRef = React.useRef<HTMLDivElement>(null);
   
   const regions = React.useMemo(() => {
     return country ? getRegionsByCountry(country) : getAllRegions();
@@ -73,10 +74,28 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
     e.stopPropagation();
   };
 
-  // Prevent wheel events from propagating to parent
-  const handleWheel = (e: React.WheelEvent) => {
+  // Improved wheel event handler for the scrollable container
+  const handleScrollableWheel = (e: React.WheelEvent) => {
+    const scrollable = scrollableRef.current;
+    if (!scrollable) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = scrollable;
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+    
+    // If at the boundary and trying to scroll beyond, prevent default
+    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+      e.preventDefault();
+    }
+    
+    // Always stop propagation to prevent parent scrolling
     e.stopPropagation();
-    e.preventDefault(); // Prevent the parent from scrolling
+  };
+
+  // Main popover wheel handler - always block events from reaching dialog
+  const handlePopoverWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   return (
@@ -94,12 +113,15 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-50" 
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-[100]" 
         align="start"
         sideOffset={5}
         onClick={handlePopoverClick}
-        onWheel={handleWheel}
-        style={{ overscrollBehavior: 'none' }}
+        onWheel={handlePopoverWheel}
+        style={{ 
+          overscrollBehavior: 'none',
+          touchAction: 'none'
+        }}
       >
         <div className="p-2 bg-popover">
           <Input
@@ -111,16 +133,16 @@ export function RegionCombobox({ value, onChange, placeholder, country }: Region
             autoFocus
           />
           <div 
+            ref={scrollableRef}
             className="max-h-[200px] overflow-y-auto pr-1"
             style={{ 
               scrollbarWidth: 'thin',
               scrollbarColor: '#9ca3af transparent',
-              overscrollBehavior: 'contain'
+              overscrollBehavior: 'contain',
+              msOverflowStyle: 'auto',
+              WebkitOverflowScrolling: 'touch'
             }}
-            onWheel={(e) => {
-              e.stopPropagation();
-              // Don't prevent default here, to allow scrolling within this div
-            }}
+            onWheel={handleScrollableWheel}
           >
             {country ? (
               filteredRegions.length === 0 ? (
