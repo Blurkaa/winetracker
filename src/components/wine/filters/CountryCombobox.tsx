@@ -22,6 +22,29 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   const [searchTerm, setSearchTerm] = React.useState("");
   const countries = React.useMemo(() => getAllCountries(), []);
   const scrollableRef = React.useRef<HTMLDivElement>(null);
+  const dialogRef = React.useRef<HTMLDivElement | null>(null);
+  
+  // Find and store reference to the parent dialog when dropdown opens
+  React.useEffect(() => {
+    if (open) {
+      // Find the closest dialog container
+      const dialogElement = document.querySelector('[role="dialog"]');
+      if (dialogElement instanceof HTMLDivElement) {
+        dialogRef.current = dialogElement;
+        
+        // Store original overflow setting
+        const originalOverflow = dialogElement.style.overflow;
+        
+        // Temporarily disable scrolling on dialog
+        dialogElement.style.overflow = 'hidden';
+        
+        // Restore original overflow when dropdown closes
+        return () => {
+          dialogElement.style.overflow = originalOverflow;
+        };
+      }
+    }
+  }, [open]);
   
   const filteredCountries = React.useMemo(() => {
     if (!searchTerm) return countries;
@@ -63,28 +86,46 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     e.stopPropagation();
   };
 
-  // Improved wheel event handler for the scrollable container
+  // Smart wheel event handler for the scrollable container
   const handleScrollableWheel = (e: React.WheelEvent) => {
     const scrollable = scrollableRef.current;
     if (!scrollable) return;
     
+    // Get current scroll metrics
     const { scrollTop, scrollHeight, clientHeight } = scrollable;
-    const isAtTop = scrollTop === 0;
+    
+    // Calculate if we're at boundaries
+    const isAtTop = scrollTop <= 0;
     const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
     
-    // If at the boundary and trying to scroll beyond, prevent default
-    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-      e.preventDefault();
-    }
+    // Determine if we should block the event from propagating
+    const shouldBlockScroll = 
+      // If scrolling up and not at the top, block propagation
+      (e.deltaY < 0 && !isAtTop) || 
+      // If scrolling down and not at the bottom, block propagation
+      (e.deltaY > 0 && !isAtBottom);
     
-    // Always stop propagation to prevent parent scrolling
-    e.stopPropagation();
+    if (shouldBlockScroll) {
+      // If we can scroll further, prevent default and stop propagation
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Log for debugging
+      console.log('Dropdown scroll', { 
+        scrollTop, 
+        scrollHeight, 
+        clientHeight, 
+        deltaY: e.deltaY,
+        isAtTop,
+        isAtBottom,
+        shouldBlockScroll
+      });
+    }
   };
 
-  // Main popover wheel handler - always block events from reaching dialog
+  // Main popover wheel handler - always block events to prevent dialog scrolling
   const handlePopoverWheel = (e: React.WheelEvent) => {
     e.stopPropagation();
-    e.preventDefault();
   };
 
   return (
@@ -101,15 +142,11 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-[100]" 
+        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-[1000]" 
         align="start"
         sideOffset={5}
         onClick={handlePopoverClick}
         onWheel={handlePopoverWheel}
-        style={{ 
-          overscrollBehavior: 'none',
-          touchAction: 'none'
-        }}
       >
         <div className="p-2 bg-popover">
           <Input
