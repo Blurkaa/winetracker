@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,29 +21,42 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
   const [searchTerm, setSearchTerm] = React.useState("");
   const countries = React.useMemo(() => getAllCountries(), []);
   const scrollableRef = React.useRef<HTMLDivElement>(null);
-  const dialogRef = React.useRef<HTMLDivElement | null>(null);
   
-  // Find and store reference to the parent dialog when dropdown opens
+  // Scroll boundaries state to optimize wheel event handling
+  const [scrollBoundaries, setScrollBoundaries] = React.useState({
+    isAtTop: true,
+    isAtBottom: false
+  });
+  
+  // Update scroll boundaries whenever scroll happens
+  const updateScrollBoundaries = React.useCallback(() => {
+    const scrollable = scrollableRef.current;
+    if (!scrollable) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = scrollable;
+    const isAtTop = scrollTop <= 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+    
+    setScrollBoundaries({ isAtTop, isAtBottom });
+    
+    // Debug logging
+    console.log('Country dropdown scroll bounds:', { scrollTop, scrollHeight, clientHeight, isAtTop, isAtBottom });
+  }, []);
+  
+  // Set up scroll event listener to keep boundaries updated
   React.useEffect(() => {
-    if (open) {
-      // Find the closest dialog container
-      const dialogElement = document.querySelector('[role="dialog"]');
-      if (dialogElement instanceof HTMLDivElement) {
-        dialogRef.current = dialogElement;
-        
-        // Store original overflow setting
-        const originalOverflow = dialogElement.style.overflow;
-        
-        // Temporarily disable scrolling on dialog
-        dialogElement.style.overflow = 'hidden';
-        
-        // Restore original overflow when dropdown closes
-        return () => {
-          dialogElement.style.overflow = originalOverflow;
-        };
-      }
-    }
-  }, [open]);
+    const scrollable = scrollableRef.current;
+    if (!open || !scrollable) return;
+    
+    // Initial boundary check
+    updateScrollBoundaries();
+    
+    // Keep boundaries updated during scrolling
+    scrollable.addEventListener('scroll', updateScrollBoundaries);
+    return () => {
+      scrollable.removeEventListener('scroll', updateScrollBoundaries);
+    };
+  }, [open, updateScrollBoundaries]);
   
   const filteredCountries = React.useMemo(() => {
     if (!searchTerm) return countries;
@@ -86,40 +98,47 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
     e.stopPropagation();
   };
 
-  // Smart wheel event handler for the scrollable container
+  // Improved wheel event handler for the scrollable container
   const handleScrollableWheel = (e: React.WheelEvent) => {
     const scrollable = scrollableRef.current;
     if (!scrollable) return;
     
-    // Get current scroll metrics
-    const { scrollTop, scrollHeight, clientHeight } = scrollable;
-    
-    // Calculate if we're at boundaries
-    const isAtTop = scrollTop <= 0;
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+    const { isAtTop, isAtBottom } = scrollBoundaries;
     
     // Determine if we should block the event from propagating
+    const isScrollingUp = e.deltaY < 0;
+    const isScrollingDown = e.deltaY > 0;
+    
     const shouldBlockScroll = 
       // If scrolling up and not at the top, block propagation
-      (e.deltaY < 0 && !isAtTop) || 
+      (isScrollingUp && !isAtTop) || 
       // If scrolling down and not at the bottom, block propagation
-      (e.deltaY > 0 && !isAtBottom);
+      (isScrollingDown && !isAtBottom);
     
     if (shouldBlockScroll) {
       // If we can scroll further, prevent default and stop propagation
       e.preventDefault();
       e.stopPropagation();
       
-      // Log for debugging
-      console.log('Dropdown scroll', { 
-        scrollTop, 
-        scrollHeight, 
-        clientHeight, 
+      // Manual scrolling instead of relying on default browser behavior
+      scrollable.scrollTop += e.deltaY;
+      
+      // Update boundaries after manual scroll
+      updateScrollBoundaries();
+      
+      // Debug logging
+      console.log('Country dropdown handling scroll', { 
         deltaY: e.deltaY,
+        isScrollingUp,
+        isScrollingDown,
         isAtTop,
         isAtBottom,
-        shouldBlockScroll
+        shouldBlockScroll,
+        newScrollTop: scrollable.scrollTop
       });
+    } else {
+      // If at boundaries, just stop propagation to prevent parent dialog from scrolling
+      e.stopPropagation();
     }
   };
 
@@ -165,9 +184,12 @@ export function CountryCombobox({ value, onChange, placeholder }: CountryCombobo
               scrollbarColor: '#9ca3af transparent',
               overscrollBehavior: 'contain',
               msOverflowStyle: 'auto',
-              WebkitOverflowScrolling: 'touch'
+              WebkitOverflowScrolling: 'touch',
+              position: 'relative',
+              zIndex: 10
             }}
             onWheel={handleScrollableWheel}
+            onScroll={updateScrollBoundaries}
           >
             {filteredCountries.length === 0 ? (
               <div className="py-6 text-center text-sm">No country found</div>
