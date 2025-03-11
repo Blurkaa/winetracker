@@ -1,12 +1,12 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { WineFormData } from "../types";
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { getAllGrapeVarieties } from "@/data/grapeVarieties";
+import { BaseCombobox } from "@/components/wine/filters/BaseCombobox";
 
 interface GrapeVarietiesProps {
   grapeVariety: string[];
@@ -16,22 +16,11 @@ interface GrapeVarietiesProps {
 export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) => {
   const [grapeInput, setGrapeInput] = useState("");
   const [existingGrapes, setExistingGrapes] = useState<string[]>([]);
-
+  
   useEffect(() => {
-    const fetchExistingGrapes = async () => {
-      const { data, error } = await supabase
-        .from('wines')
-        .select('grape_variety');
-      
-      if (!error && data) {
-        const uniqueGrapes = Array.from(new Set(
-          data.flatMap(wine => wine.grape_variety || [])
-        )).sort();
-        setExistingGrapes(uniqueGrapes);
-      }
-    };
-
-    fetchExistingGrapes();
+    // Get predefined grape varieties from our data file
+    const predefinedGrapes = getAllGrapeVarieties();
+    setExistingGrapes(predefinedGrapes);
   }, []);
 
   const handleAddGrape = (grape: string) => {
@@ -68,38 +57,37 @@ export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) 
           </Badge>
         ))}
       </div>
-      <div className="flex gap-2">
-        <Select
-          value={grapeInput}
-          onValueChange={(value) => {
-            handleAddGrape(value);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select or type a grape variety" />
-          </SelectTrigger>
-          <SelectContent>
-            {existingGrapes
-              .filter(grape => !grapeVariety.includes(grape))
-              .map((grape) => (
-                <SelectItem key={grape} value={grape}>
-                  {grape}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-        <Input
-          placeholder="Or type a new variety"
-          value={grapeInput}
-          onChange={(e) => setGrapeInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleAddGrape(grapeInput);
-            }
-          }}
-        />
-      </div>
+      
+      <BaseCombobox
+        value={grapeInput}
+        onChange={(value) => {
+          handleAddGrape(value);
+        }}
+        placeholder="Select or type a grape variety"
+        searchPlaceholder="Search grape varieties..."
+        options={existingGrapes.filter(grape => !grapeVariety.includes(grape))}
+        onSearchChange={(value) => setGrapeInput(value)}
+        customOptionHandler={(searchTerm, options) => {
+          if (!searchTerm) return options;
+          
+          // Check if search term exactly matches any existing option
+          const exactMatch = options.find(
+            option => option.toLowerCase() === searchTerm.toLowerCase()
+          );
+          
+          // Get all partial matches
+          const partialMatches = options.filter(
+            option => option.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          
+          // If there's no exact match and the search term isn't empty, add it as a custom option
+          if (!exactMatch && searchTerm.trim() !== "") {
+            return [searchTerm, ...partialMatches];
+          }
+          
+          return partialMatches;
+        }}
+      />
     </div>
   );
 };
