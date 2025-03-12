@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -144,7 +145,7 @@ export function BaseCombobox({
                   key={`${option}-${index}`}
                   variant="ghost"
                   className={cn(
-                    "relative flex w-full justify-start font-normal",
+                    "relative flex w-full justify-start font-normal py-1.5 h-auto min-h-8",
                     value === option ? "bg-accent text-accent-foreground" : ""
                   )}
                   onClick={() => handleSelect(option)}
@@ -152,7 +153,7 @@ export function BaseCombobox({
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "mr-1 h-4 w-4 flex-shrink-0",
                       value === option ? "opacity-100" : "opacity-0"
                     )}
                   />
