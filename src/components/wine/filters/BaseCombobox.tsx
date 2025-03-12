@@ -145,7 +145,7 @@ export function BaseCombobox({
                   key={`${option}-${index}`}
                   variant="ghost"
                   className={cn(
-                    "relative flex w-full justify-start font-normal py-1.5 h-auto min-h-8",
+                    "relative flex w-full justify-start font-normal py-1 px-1 h-auto min-h-7 rounded-sm",
                     value === option ? "bg-accent text-accent-foreground" : ""
                   )}
                   onClick={() => handleSelect(option)}
@@ -153,7 +153,7 @@ export function BaseCombobox({
                 >
                   <Check
                     className={cn(
-                      "mr-1 h-4 w-4 flex-shrink-0",
+                      "mr-0.5 h-3.5 w-3.5 flex-shrink-0",
                       value === option ? "opacity-100" : "opacity-0"
                     )}
                   />
