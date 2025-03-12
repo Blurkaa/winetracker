@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -49,17 +48,14 @@ export function BaseCombobox({
     
     if (!searchTerm) return options;
     
-    // Check if search term exactly matches any existing option
     const exactMatch = options.find(
       option => option.toLowerCase() === searchTerm.toLowerCase()
     );
     
-    // Get all partial matches
     const partialMatches = options.filter(
       option => option.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
-    // If there's no exact match and the search term isn't empty, add it as a custom option
     if (!exactMatch && searchTerm.trim() !== "") {
       return [searchTerm, ...partialMatches];
     }
@@ -73,7 +69,6 @@ export function BaseCombobox({
     setSearchTerm("");
   }, [onChange, value]);
 
-  // Handle Enter key press in search input
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.trim() !== "") {
       e.preventDefault();
@@ -81,7 +76,6 @@ export function BaseCombobox({
     }
   };
 
-  // Handle search input changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setSearchTerm(newValue);
@@ -90,10 +84,11 @@ export function BaseCombobox({
     }
   };
 
-  // Prevent clicks inside the popover from closing it
   const handlePopoverClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -102,15 +97,16 @@ export function BaseCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between w-full bg-background"
+          className="justify-between w-full bg-background text-left font-normal"
           disabled={disabled}
+          ref={triggerRef}
         >
-          {value ? value : placeholder}
+          <span className="truncate">{value ? value : placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 w-[var(--radix-popover-trigger-width)] min-w-[200px] z-[1000]" 
+        className="p-0 w-full min-w-[var(--radix-popover-trigger-width)] z-[1000]" 
         align="start"
         sideOffset={5}
         onClick={handlePopoverClick}
@@ -160,7 +156,7 @@ export function BaseCombobox({
                       value === option ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {option}
+                  <span className="truncate">{option}</span>
                 </Button>
               ))
             )}

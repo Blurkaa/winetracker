@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
@@ -35,7 +35,7 @@ export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) 
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full">
       <Label htmlFor="grapeVariety">Grape Varieties *</Label>
       <div className="flex flex-wrap gap-2 mb-2">
         {grapeVariety.map((grape) => (
@@ -56,33 +56,35 @@ export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) 
         ))}
       </div>
       
-      <BaseCombobox
-        value={grapeInput}
-        onChange={(value) => {
-          handleAddGrape(value);
-        }}
-        placeholder="Select or type a grape variety"
-        searchPlaceholder="Search grape varieties..."
-        options={existingGrapes.filter(grape => !grapeVariety.includes(grape))}
-        onSearchChange={(value) => setGrapeInput(value)}
-        customOptionHandler={(searchTerm, options) => {
-          if (!searchTerm) return options;
-          
-          const exactMatch = options.find(
-            option => option.toLowerCase() === searchTerm.toLowerCase()
-          );
-          
-          const partialMatches = options.filter(
-            option => option.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-          
-          if (!exactMatch && searchTerm.trim() !== "") {
-            return [searchTerm, ...partialMatches];
-          }
-          
-          return partialMatches;
-        }}
-      />
+      <div className="w-full">
+        <BaseCombobox
+          value={grapeInput}
+          onChange={(value) => {
+            handleAddGrape(value);
+          }}
+          placeholder="Select or type a grape variety"
+          searchPlaceholder="Search grape varieties..."
+          options={existingGrapes.filter(grape => !grapeVariety.includes(grape))}
+          onSearchChange={(value) => setGrapeInput(value)}
+          customOptionHandler={(searchTerm, options) => {
+            if (!searchTerm) return options;
+            
+            const exactMatch = options.find(
+              option => option.toLowerCase() === searchTerm.toLowerCase()
+            );
+            
+            const partialMatches = options.filter(
+              option => option.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            if (!exactMatch && searchTerm.trim() !== "") {
+              return [searchTerm, ...partialMatches];
+            }
+            
+            return partialMatches;
+          }}
+        />
+      </div>
     </div>
   );
 };
