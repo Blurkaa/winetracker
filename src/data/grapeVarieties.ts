@@ -141,7 +141,7 @@ export const grapeVarieties: string[] = [
   "Mandilaria",
   "Mantonico",
   "Maratheftiko",
-  "Marawi"
+  "Marawi",
   "Maria Gomes",
   "Marsanne",
   "Mavro",
