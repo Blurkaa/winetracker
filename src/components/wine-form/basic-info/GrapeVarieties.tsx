@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +17,6 @@ export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) 
   const [existingGrapes, setExistingGrapes] = useState<string[]>([]);
   
   useEffect(() => {
-    // Get predefined grape varieties from our data file
     const predefinedGrapes = getAllGrapeVarieties();
     setExistingGrapes(predefinedGrapes);
   }, []);
@@ -70,17 +68,14 @@ export const GrapeVarieties = ({ grapeVariety, onUpdate }: GrapeVarietiesProps) 
         customOptionHandler={(searchTerm, options) => {
           if (!searchTerm) return options;
           
-          // Check if search term exactly matches any existing option
           const exactMatch = options.find(
             option => option.toLowerCase() === searchTerm.toLowerCase()
           );
           
-          // Get all partial matches
           const partialMatches = options.filter(
             option => option.toLowerCase().includes(searchTerm.toLowerCase())
           );
           
-          // If there's no exact match and the search term isn't empty, add it as a custom option
           if (!exactMatch && searchTerm.trim() !== "") {
             return [searchTerm, ...partialMatches];
           }
