@@ -1,3 +1,4 @@
+
 import { WineFormData } from "./types";
 import { ClaritySection } from "./appearance/ClaritySection";
 import { IntensitySection } from "./appearance/IntensitySection";

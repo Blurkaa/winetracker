@@ -1,3 +1,4 @@
+
 import { WineFormData } from "./types";
 import { SweetnessSection } from "./palate/SweetnessSection";
 import { IntensityBasedSection } from "./palate/IntensityBasedSection";
