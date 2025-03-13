@@ -33,5 +33,12 @@ export interface WineFormData {
     flavourIntensity: "light" | "medium-" | "medium" | "medium+" | "pronounced";
     finish: "short" | "medium-" | "medium" | "medium+" | "long";
   };
+  blice: {
+    balance: number;
+    length: number;
+    intensity: number;
+    complexity: number;
+    enjoyment: number;
+  };
   notes?: string;
 }

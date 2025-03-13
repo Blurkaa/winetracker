@@ -7,6 +7,7 @@ import { WineRating } from "./WineRating";
 import { WineAppearance } from "./WineAppearance";
 import { WineNose } from "./WineNose";
 import { WinePalate } from "./WinePalate";
+import { WineBlice } from "./WineBlice";
 import { WineNotes } from "./WineNotes";
 import { WineSubmitButton } from "./WineSubmitButton";
 
@@ -39,6 +40,7 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
           <WineAppearance formData={formData} onUpdate={handleFormUpdate} />
           <WineNose formData={formData} onUpdate={handleFormUpdate} />
           <WinePalate formData={formData} onUpdate={handleFormUpdate} />
+          <WineBlice formData={formData} onUpdate={handleFormUpdate} onRatingChange={setRating} />
         </div>
       </div>
 

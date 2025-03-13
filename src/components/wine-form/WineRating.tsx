@@ -1,3 +1,4 @@
+
 import { Star, StarHalf } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -9,6 +10,9 @@ interface WineRatingProps {
 
 export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
   const [hoverRating, setHoverRating] = useState(0);
+  
+  // Display maximum of 5 stars
+  const displayRating = Math.min(rating, 5);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const button = e.currentTarget;
@@ -34,9 +38,9 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
   };
 
   const renderStar = (position: number) => {
-    const displayRating = hoverRating || rating;
-    const isHalfStar = displayRating === position - 0.5;
-    const isFullStar = displayRating >= position;
+    const activeRating = hoverRating || displayRating;
+    const isHalfStar = activeRating === position - 0.5;
+    const isFullStar = activeRating >= position;
     
     return (
       <button
@@ -51,7 +55,7 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
         {isHalfStar ? (
           <StarHalf
             size={24}
-            className="rating-star absolute inset-0"
+            className="rating-star absolute inset-0 fill-gold"
           />
         ) : (
           <Star
@@ -68,8 +72,13 @@ export const WineRating = ({ rating, onRatingChange }: WineRatingProps) => {
   return (
     <div className="space-y-2">
       <Label>Rating</Label>
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => renderStar(star))}
+      <div className="flex items-center gap-1">
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((star) => renderStar(star))}
+        </div>
+        <span className="ml-2 text-sm text-muted-foreground">
+          [{rating.toFixed(1)}]
+        </span>
       </div>
     </div>
   );

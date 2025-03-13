@@ -42,6 +42,13 @@ export const useWineForm = (initialData?: WineFormData) => {
       flavourIntensity: undefined,
       finish: undefined,
     },
+    blice: initialData?.blice || {
+      balance: 0,
+      length: 0,
+      intensity: 0,
+      complexity: 0,
+      enjoyment: 0,
+    },
     notes: initialData?.notes || "",
     ...(initialData?.id ? { id: initialData.id } : {})
   });
@@ -85,6 +92,13 @@ export const useWineForm = (initialData?: WineFormData) => {
         body: undefined,
         flavourIntensity: undefined,
         finish: undefined,
+      },
+      blice: {
+        balance: 0,
+        length: 0,
+        intensity: 0,
+        complexity: 0,
+        enjoyment: 0,
       },
       notes: "",
     });
