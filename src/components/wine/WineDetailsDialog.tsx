@@ -65,6 +65,7 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
           appearance: updatedWine.appearance,
           nose: updatedWine.nose,
           palate: updatedWine.palate,
+          blice: updatedWine.blice,
           notes: updatedWine.notes
         })
         .eq('id', wine.id);
@@ -206,6 +207,18 @@ export const WineDetailsDialog = ({ wine, isOpen, onOpenChange, onWineUpdate }: 
                     {currentWine.type === "sparkling" && <p>Mousse: {currentWine.palate.mousse}</p>}
                     <p>Flavour Intensity: {currentWine.palate.flavourIntensity}</p>
                     <p>Finish: {currentWine.palate.finish}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-2">BLICE Rating</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    <p>Balance: {currentWine.blice.balance.toFixed(1)}</p>
+                    <p>Length: {currentWine.blice.length.toFixed(1)}</p>
+                    <p>Intensity: {currentWine.blice.intensity.toFixed(1)}</p>
+                    <p>Complexity: {currentWine.blice.complexity.toFixed(1)}</p>
+                    <p>Enjoyment: {currentWine.blice.enjoyment.toFixed(1)}</p>
+                    <p className="col-span-2">Total: {currentWine.rating.toFixed(1)}</p>
                   </div>
                 </div>
               </div>

@@ -48,6 +48,7 @@ export const AddWineDialog = ({ isOpen, onOpenChange, children }: AddWineDialogP
       appearance: wine.appearance,
       nose: wine.nose,
       palate: wine.palate,
+      blice: wine.blice,
       notes: wine.notes,
       user_id: user.id
     }]);

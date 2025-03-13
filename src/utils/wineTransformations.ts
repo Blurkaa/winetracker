@@ -38,5 +38,12 @@ export const transformWineData = (wine: WineRow): WineFormData => ({
     flavourIntensity: ((wine.palate as any)?.flavourIntensity || "medium") as WineFormData['palate']['flavourIntensity'],
     finish: ((wine.palate as any)?.finish || "medium") as WineFormData['palate']['finish']
   },
+  blice: {
+    balance: ((wine.blice as any)?.balance || 0),
+    length: ((wine.blice as any)?.length || 0),
+    intensity: ((wine.blice as any)?.intensity || 0),
+    complexity: ((wine.blice as any)?.complexity || 0),
+    enjoyment: ((wine.blice as any)?.enjoyment || 0)
+  },
   notes: wine.notes || ""
 });
