@@ -2,7 +2,7 @@
 import { Star, StarHalf } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { WineDetailsDialog } from "@/components/wine/WineDetailsDialog";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { WineFormData } from "./wine-form/types";
 
 interface WineCardProps {
@@ -13,7 +13,7 @@ const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export const WineCard = ({ wine }: WineCardProps) => {
+export const WineCard = memo(({ wine }: WineCardProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const renderStar = (position: number) => {
@@ -117,4 +117,6 @@ export const WineCard = ({ wine }: WineCardProps) => {
       />
     </>
   );
-};
+});
+
+WineCard.displayName = 'WineCard';

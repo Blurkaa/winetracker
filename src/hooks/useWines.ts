@@ -75,6 +75,8 @@ export const useWines = (filters: WineFilterOptions, searchQuery: string) => {
       }
 
       return data.map(transformWineData);
-    }
+    },
+    staleTime: 60000, // Cache data for 1 minute
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
   });
 };

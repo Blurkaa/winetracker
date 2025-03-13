@@ -3,6 +3,7 @@ import { WineFormData } from "./types";
 import { ClaritySection } from "./appearance/ClaritySection";
 import { IntensitySection } from "./appearance/IntensitySection";
 import { ColoursSection } from "./appearance/ColoursSection";
+import { useCallback } from "react";
 
 interface WineAppearanceProps {
   formData: WineFormData;
@@ -10,7 +11,7 @@ interface WineAppearanceProps {
 }
 
 export const WineAppearance = ({ formData, onUpdate }: WineAppearanceProps) => {
-  const handleColourChange = (colour: string, isChecked: boolean) => {
+  const handleColourChange = useCallback((colour: string, isChecked: boolean) => {
     const newColours = isChecked 
       ? [...formData.appearance.colours, colour.toLowerCase()]
       : formData.appearance.colours.filter(c => c !== colour.toLowerCase());
@@ -21,9 +22,9 @@ export const WineAppearance = ({ formData, onUpdate }: WineAppearanceProps) => {
         colours: newColours
       }
     });
-  };
+  }, [formData.appearance.colours, onUpdate]);
 
-  const handleClarityChange = (value: string, isChecked: boolean) => {
+  const handleClarityChange = useCallback((value: string, isChecked: boolean) => {
     if (isChecked) {
       onUpdate({
         appearance: {
@@ -32,9 +33,9 @@ export const WineAppearance = ({ formData, onUpdate }: WineAppearanceProps) => {
         }
       });
     }
-  };
+  }, [formData.appearance, onUpdate]);
 
-  const handleIntensityChange = (value: string, isChecked: boolean) => {
+  const handleIntensityChange = useCallback((value: string, isChecked: boolean) => {
     if (isChecked) {
       onUpdate({
         appearance: {
@@ -43,7 +44,7 @@ export const WineAppearance = ({ formData, onUpdate }: WineAppearanceProps) => {
         }
       });
     }
-  };
+  }, [formData.appearance, onUpdate]);
 
   return (
     <div>

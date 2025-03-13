@@ -3,6 +3,7 @@ import { WineFormData } from "./types";
 import { SweetnessSection } from "./palate/SweetnessSection";
 import { IntensityBasedSection } from "./palate/IntensityBasedSection";
 import { MousseSection } from "./palate/MousseSection";
+import { useCallback } from "react";
 
 interface WinePalateProps {
   formData: WineFormData;
@@ -10,7 +11,7 @@ interface WinePalateProps {
 }
 
 export const WinePalate = ({ formData, onUpdate }: WinePalateProps) => {
-  const handlePalateChange = (field: keyof WineFormData['palate'], value: string, isChecked: boolean) => {
+  const handlePalateChange = useCallback((field: keyof WineFormData['palate'], value: string, isChecked: boolean) => {
     if (isChecked) {
       onUpdate({
         palate: {
@@ -19,7 +20,7 @@ export const WinePalate = ({ formData, onUpdate }: WinePalateProps) => {
         }
       });
     }
-  };
+  }, [formData.palate, onUpdate]);
 
   const alcoholLabels = {
     "low": "Low (<11%)",

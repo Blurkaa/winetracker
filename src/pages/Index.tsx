@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { WineFilters } from "@/components/wine/WineFilters";
 import { WineGrid } from "@/components/wine/WineGrid";
@@ -27,10 +27,18 @@ const Index = () => {
 
   const { data: wines = [], isLoading } = useWines(filters, searchQuery);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setFilters(initialFilters);
     setSearchQuery("");
-  };
+  }, []);
+  
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
+
+  const handleFiltersChange = useCallback((newFilters: WineFilterOptions) => {
+    setFilters(newFilters);
+  }, []);
 
   return (
     <div className="min-h-screen bg-cream p-6">
@@ -55,10 +63,10 @@ const Index = () => {
           </div>
         </div>
 
-        <WineSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <WineSearch searchQuery={searchQuery} setSearchQuery={handleSearchChange} />
         <WineFilters 
           filters={filters} 
-          setFilters={setFilters} 
+          setFilters={handleFiltersChange} 
           onReset={handleReset}
         />
         <WineGrid wines={wines} isLoading={isLoading} />
