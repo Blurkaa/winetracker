@@ -57,6 +57,13 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
       flavourIntensity: "medium",
       finish: "medium",
     },
+    blice: {
+      balance: 0,
+      length: 0,
+      intensity: 0,
+      complexity: 0,
+      enjoyment: 0
+    }
   });
 
   useEffect(() => {
@@ -128,6 +135,13 @@ export const AddWineForm = ({ onSubmit, initialData }: AddWineFormProps) => {
         flavourIntensity: "medium",
         finish: "medium",
       },
+      blice: {
+        balance: 0,
+        length: 0,
+        intensity: 0,
+        complexity: 0,
+        enjoyment: 0
+      }
     });
     setRating(0);
     toast({

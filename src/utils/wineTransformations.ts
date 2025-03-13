@@ -39,11 +39,12 @@ export const transformWineData = (wine: WineRow): WineFormData => ({
     finish: ((wine.palate as any)?.finish || "medium") as WineFormData['palate']['finish']
   },
   blice: {
-    balance: ((wine.blice as any)?.balance || 0),
-    length: ((wine.blice as any)?.length || 0),
-    intensity: ((wine.blice as any)?.intensity || 0),
-    complexity: ((wine.blice as any)?.complexity || 0),
-    enjoyment: ((wine.blice as any)?.enjoyment || 0)
+    // Since 'blice' might not exist in the database response, we need to handle it safely
+    balance: (wine as any)?.blice?.balance || 0,
+    length: (wine as any)?.blice?.length || 0,
+    intensity: (wine as any)?.blice?.intensity || 0,
+    complexity: (wine as any)?.blice?.complexity || 0,
+    enjoyment: (wine as any)?.blice?.enjoyment || 0
   },
   notes: wine.notes || ""
 });
